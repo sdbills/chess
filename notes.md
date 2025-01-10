@@ -1,1 +1,1 @@
-# My notes for this project
+# My notes
