@@ -18,7 +18,9 @@ public class KnightMovesCalculator implements PieceMovesCalculator {
                         newPosition = new ChessPosition(position.getRow()+i,position.getColumn()+2*j);
                     }
                     var newMove = new ChessMove(position, newPosition);
-                    if (newMove.isValidMove(board)) moves.add(newMove);
+                    if (newMove.isValidMove(board)) {
+                        moves.add(newMove);
+                    }
                 }
             }
         }
