@@ -46,11 +46,11 @@ public class ChessBoard {
     public void resetBoard() {
         board = new ChessPiece[8][8];
         PieceType[] order = {ROOK, KNIGHT, BISHOP, QUEEN, KING, BISHOP, KNIGHT, ROOK};
-        for (int i = 0; i < 8; i++) {
-            addPiece(new ChessPosition(1, i + 1), new ChessPiece(ChessGame.TeamColor.WHITE, order[i]));
-            addPiece(new ChessPosition(2, i + 1), new ChessPiece(ChessGame.TeamColor.WHITE, PAWN));
-            addPiece(new ChessPosition(7, i + 1), new ChessPiece(ChessGame.TeamColor.BLACK, PAWN));
-            addPiece(new ChessPosition(8, i + 1), new ChessPiece(ChessGame.TeamColor.BLACK, order[i]));
+        for (int i = 1; i < 9; i++) {
+            addPiece(new ChessPosition(1, i), new ChessPiece(ChessGame.TeamColor.WHITE, order[i-1]));
+            addPiece(new ChessPosition(2, i), new ChessPiece(ChessGame.TeamColor.WHITE, PAWN));
+            addPiece(new ChessPosition(7, i), new ChessPiece(ChessGame.TeamColor.BLACK, PAWN));
+            addPiece(new ChessPosition(8, i), new ChessPiece(ChessGame.TeamColor.BLACK, order[i-1]));
         }
     }
 
