@@ -53,6 +53,14 @@ public class ChessMove {
         return null;
     }
 
+    public boolean isValidMove(ChessBoard board) {
+        if (startPosition.equals(endPosition) || !endPosition.isValid() || board.getPiece(startPosition) == null) {
+            return false;
+        }
+        return board.getPiece(endPosition) == null || board.getPiece(startPosition).getTeamColor() != board.getPiece(endPosition).getTeamColor();
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
