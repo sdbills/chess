@@ -1,5 +1,7 @@
 package chess;
 
+import chess.MovesCalculator.*;
+
 import java.util.Collection;
 import java.util.Objects;
 
@@ -9,7 +11,7 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessPiece {
+public class ChessPiece implements PieceMovesCalculator {
 
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
@@ -52,14 +54,15 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+    @Override
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         return switch (getPieceType()) {
-            case KING -> new KingMovesCalculator().pieceMoves(board, myPosition);
-            case QUEEN -> new QueenMovesCalculator().pieceMoves(board, myPosition);
-            case ROOK -> new RookMovesCalculator().pieceMoves(board, myPosition);
-            case BISHOP -> new BishopMovesCalculator().pieceMoves(board, myPosition);
-            case PAWN -> new PawnMovesCalculator().pieceMoves(board, myPosition);
-            case KNIGHT -> new KnightMovesCalculator().pieceMoves(board, myPosition);
+            case KING -> new KingMovesCalculator().pieceMoves(board, position);
+            case QUEEN -> new QueenMovesCalculator().pieceMoves(board, position);
+            case ROOK -> new RookMovesCalculator().pieceMoves(board, position);
+            case BISHOP -> new BishopMovesCalculator().pieceMoves(board, position);
+            case PAWN -> new PawnMovesCalculator().pieceMoves(board, position);
+            case KNIGHT -> new KnightMovesCalculator().pieceMoves(board, position);
         };
     }
 
