@@ -58,6 +58,7 @@ public class ChessPiece {
             case KING -> new KingMovesCalculator().pieceMoves(board, myPosition);
             case QUEEN -> new QueenMovesCalculator().pieceMoves(board, myPosition);
             case ROOK -> new RookMovesCalculator().pieceMoves(board, myPosition);
+            case BISHOP -> new BishopMovesCalculator().pieceMoves(board, myPosition);
             default -> new ArrayList<>();
         };
     }
