@@ -34,6 +34,10 @@ public class ChessPosition {
         return col;
     }
 
+    public boolean isValid() {
+        return row > 0 && row <= 8 && col > 0 && col <= 8;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
