@@ -11,7 +11,7 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessPiece implements PieceMovesCalculator {
+public class ChessPiece {
 
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
@@ -54,15 +54,14 @@ public class ChessPiece implements PieceMovesCalculator {
      *
      * @return Collection of valid moves
      */
-    @Override
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         return switch (getPieceType()) {
-            case KING -> new KingMovesCalculator().pieceMoves(board, position);
-            case QUEEN -> new QueenMovesCalculator().pieceMoves(board, position);
-            case ROOK -> new RookMovesCalculator().pieceMoves(board, position);
-            case BISHOP -> new BishopMovesCalculator().pieceMoves(board, position);
-            case PAWN -> new PawnMovesCalculator().pieceMoves(board, position);
-            case KNIGHT -> new KnightMovesCalculator().pieceMoves(board, position);
+            case KING ->  new KingMovesCalculator().pieceMoves(board, myPosition);
+            case QUEEN -> new QueenMovesCalculator().pieceMoves(board, myPosition);
+            case ROOK ->  new RookMovesCalculator().pieceMoves(board, myPosition);
+            case BISHOP -> new BishopMovesCalculator().pieceMoves(board, myPosition);
+            case PAWN -> new PawnMovesCalculator().pieceMoves(board, myPosition);
+            case KNIGHT -> new KnightMovesCalculator().pieceMoves(board, myPosition);
         };
     }
 
