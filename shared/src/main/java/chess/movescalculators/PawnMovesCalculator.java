@@ -13,12 +13,12 @@ public class PawnMovesCalculator extends PiecesMovesCalculator{
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         var moves = new ArrayList<ChessMove>();
+        int d = 1;
+        if (board.getPiece(position).getTeamColor() == ChessGame.TeamColor.BLACK) {
+            d = -1;
+        }
         for (int i = -1; i < 2; i++) {
             ChessPosition newPosition;
-            int d = 1;
-            if (board.getPiece(position).getTeamColor() == ChessGame.TeamColor.BLACK) {
-                d = -1;
-            }
             newPosition = new ChessPosition(position.getRow()+d,position.getColumn()+i);
             var newMove = createLegalMove(board,position,newPosition);
             if (newMove != null) {
