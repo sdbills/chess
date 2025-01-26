@@ -1,4 +1,4 @@
-package chess.MovesCalculators;
+package chess.movesCalculators;
 
 import chess.ChessBoard;
 import chess.ChessGame;
@@ -48,7 +48,8 @@ public class PawnMovesCalculator extends PiecesMovesCalculator{
             if (board.getPiece(newPosition) == null && newPosition.getColumn() == oldPosition.getColumn()) {
                 return newMove;
             }
-            if (newPosition.getColumn() != oldPosition.getColumn() && board.getPiece(newPosition) != null && board.getPiece(newPosition).getTeamColor() != board.getPiece(oldPosition).getTeamColor()) {
+            if (newPosition.getColumn() != oldPosition.getColumn() && board.getPiece(newPosition) != null
+                    && board.getPiece(newPosition).getTeamColor() != board.getPiece(oldPosition).getTeamColor()) {
                 return newMove;
             }
         }

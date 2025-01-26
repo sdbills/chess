@@ -1,4 +1,4 @@
-package chess.MovesCalculators;
+package chess.movesCalculators;
 
 import chess.ChessBoard;
 import chess.ChessMove;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 
-public class BishopMovesCalculator extends PiecesMovesCalculator{
+public class RookMovesCalculator extends PiecesMovesCalculator{
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         var moves = new ArrayList<ChessMove>();
@@ -18,8 +18,12 @@ public class BishopMovesCalculator extends PiecesMovesCalculator{
                 ChessPosition newPosition;
                 int i = 1;
                 do {
-                    newPosition = new ChessPosition(position.getRow()+n*i, position.getColumn()+m*i);
-                    var newMove = createLegalMove(board, position, newPosition);
+                    if (n == -1) {
+                        newPosition = new ChessPosition(position.getRow()+i*m, position.getColumn());
+                    } else {
+                        newPosition = new ChessPosition(position.getRow(), position.getColumn()+i*m);
+                    }
+                    var newMove = createLegalMove(board,position,newPosition);
                     if (newMove != null) {
                         moves.add(newMove);
                     }
@@ -27,6 +31,7 @@ public class BishopMovesCalculator extends PiecesMovesCalculator{
                 } while (newPosition.isValid() && board.getPiece(newPosition) == null);
             }
         }
+
         return moves;
     }
 }
