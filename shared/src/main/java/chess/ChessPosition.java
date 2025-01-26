@@ -35,7 +35,7 @@ public class ChessPosition {
     }
 
     public boolean isValid() {
-        return row > 0 && row <= 8 && col > 0 && col <= 8;
+        return row >= 1 && row < 9 && col >= 1 && col < 9;
     }
 
     @Override
@@ -44,11 +44,11 @@ public class ChessPosition {
             return false;
         }
         ChessPosition that = (ChessPosition) o;
-        return row == that.row && col == that.col;
+        return getRow() == that.getRow() && col == that.col;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(row, col);
+        return Objects.hash(getRow(), col);
     }
 }

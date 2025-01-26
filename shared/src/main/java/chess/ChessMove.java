@@ -47,19 +47,15 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        if (endPosition.getRow() == 1 || endPosition.getRow() == 8) {
-            return promotionPiece;
+        if (promotionPiece == null) {
+            return null;
         }
-        return null;
+        return promotionPiece;
     }
 
-    public boolean isValidMove(ChessBoard board) {
-        if (startPosition.equals(endPosition) || !endPosition.isValid() || board.getPiece(startPosition) == null) {
-            return false;
-        }
-        return board.getPiece(endPosition) == null || board.getPiece(startPosition).getTeamColor() != board.getPiece(endPosition).getTeamColor();
+    public boolean isValidMove() {
+        return !endPosition.equals(startPosition) && startPosition.isValid() && endPosition.isValid();
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -67,9 +63,7 @@ public class ChessMove {
             return false;
         }
         ChessMove chessMove = (ChessMove) o;
-        return Objects.equals(getStartPosition(), chessMove.getStartPosition())
-                && Objects.equals(getEndPosition(), chessMove.getEndPosition())
-                && getPromotionPiece() == chessMove.getPromotionPiece();
+        return Objects.equals(getStartPosition(), chessMove.getStartPosition()) && Objects.equals(getEndPosition(), chessMove.getEndPosition()) && getPromotionPiece() == chessMove.getPromotionPiece();
     }
 
     @Override

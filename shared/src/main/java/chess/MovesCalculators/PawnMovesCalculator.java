@@ -1,7 +1,10 @@
 package chess.MovesCalculators;
 
-import chess.*;
+import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPiece.PieceType;
+import chess.ChessPosition;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,6 +1,6 @@
 package chess;
 
-import chess.MovesCalculator.*;
+import chess.MovesCalculators.*;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -16,7 +16,7 @@ public class ChessPiece {
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
 
-    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+    public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
     }
@@ -37,7 +37,7 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-       return pieceColor;
+        return pieceColor;
     }
 
     /**
@@ -55,14 +55,15 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return switch (getPieceType()) {
-            case KING ->  new KingMovesCalculator().pieceMoves(board, myPosition);
-            case QUEEN -> new QueenMovesCalculator().pieceMoves(board, myPosition);
-            case ROOK ->  new RookMovesCalculator().pieceMoves(board, myPosition);
-            case BISHOP -> new BishopMovesCalculator().pieceMoves(board, myPosition);
-            case PAWN -> new PawnMovesCalculator().pieceMoves(board, myPosition);
-            case KNIGHT -> new KnightMovesCalculator().pieceMoves(board, myPosition);
+        PiecesMovesCalculator moves = switch (type) {
+            case KING -> new KingMovesCalculator();
+            case QUEEN -> new QueenMovesCalculator();
+            case BISHOP -> new BishopMovesCalculator();
+            case KNIGHT -> new KnightMovesCalculator();
+            case ROOK -> new RookMovesCalculator();
+            case PAWN -> new PawnMovesCalculator();
         };
+        return moves.pieceMoves(board, myPosition);
     }
 
     @Override
