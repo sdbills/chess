@@ -52,6 +52,10 @@ public class ChessBoard {
         }
     }
 
+    public boolean isEmptyPosition(ChessPosition position) {
+        return getPiece(position) == null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {

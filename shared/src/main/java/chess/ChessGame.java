@@ -49,12 +49,14 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        var piece = board.getPiece(startPosition);
-        if (piece.getTeamColor() == teamTurn) {
-            var allMoves = piece.pieceMoves(board, startPosition);
-
+        if (board.isEmptyPosition(startPosition)) {
+            return null;
         }
-        return null;
+        var piece = board.getPiece(startPosition);
+        var team = piece.getTeamColor();
+        var moves = piece.pieceMoves(board, startPosition);
+        moves.removeIf(move -> isInCheck(team) || isInCheckmate(team));
+        return moves;
     }
 
     /**
@@ -64,11 +66,15 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if (!validMoves(move.getStartPosition()).contains(move)) {
+        var startPosition = move.getStartPosition();
+
+        if (board.isEmptyPosition(startPosition)
+                || !validMoves(startPosition).contains(move)
+                || board.getPiece(startPosition).getTeamColor() != teamTurn) {
             throw new InvalidMoveException();
         } else {
-            board.addPiece(move.getEndPosition(),board.getPiece(move.getStartPosition()));
-            board.addPiece(move.getStartPosition(),null);
+            board.addPiece(move.getEndPosition(),board.getPiece(startPosition));
+            board.addPiece(startPosition,null);
         }
         changeTeam();
     }

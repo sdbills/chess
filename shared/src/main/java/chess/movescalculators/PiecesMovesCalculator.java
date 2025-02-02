@@ -12,7 +12,7 @@ public abstract class PiecesMovesCalculator {
     public ChessMove createLegalMove(ChessBoard board, ChessPosition oldPosition, ChessPosition newPosition) {
         var newMove = new ChessMove(oldPosition,newPosition);
         if (newMove.isValidMove()) {
-            if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() != board.getPiece(oldPosition).getTeamColor()) {
+            if (board.isEmptyPosition(newPosition) || board.getPiece(newPosition).getTeamColor() != board.getPiece(oldPosition).getTeamColor()) {
                 return newMove;
             }
         }

@@ -24,7 +24,7 @@ public class BishopMovesCalculator extends PiecesMovesCalculator{
                         moves.add(newMove);
                     }
                     i++;
-                } while (newPosition.isValid() && board.getPiece(newPosition) == null);
+                } while (newPosition.isValid() && board.isEmptyPosition(newPosition));
             }
         }
         return moves;

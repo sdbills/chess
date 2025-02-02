@@ -29,7 +29,7 @@ public class PawnMovesCalculator extends PiecesMovesCalculator{
                 }
             }
 
-            if ((position.getRow() == 2 || position.getRow() == 7) && i == 0 && board.getPiece(newPosition) == null) {
+            if ((position.getRow() == 2 || position.getRow() == 7) && i == 0 && board.isEmptyPosition(newPosition)) {
                 newPosition = new ChessPosition(position.getRow()+2*d,position.getColumn());
                 newMove = createLegalMove(board,position,newPosition);
                 if (newMove != null) {
@@ -45,10 +45,10 @@ public class PawnMovesCalculator extends PiecesMovesCalculator{
     public ChessMove createLegalMove(ChessBoard board, ChessPosition oldPosition, ChessPosition newPosition) {
         var newMove = new ChessMove(oldPosition,newPosition);
         if (newMove.isValidMove()) {
-            if (board.getPiece(newPosition) == null && newPosition.getColumn() == oldPosition.getColumn()) {
+            if (board.isEmptyPosition(newPosition) && newPosition.getColumn() == oldPosition.getColumn()) {
                 return newMove;
             }
-            if (newPosition.getColumn() != oldPosition.getColumn() && board.getPiece(newPosition) != null
+            if (newPosition.getColumn() != oldPosition.getColumn() && !board.isEmptyPosition(newPosition)
                     && board.getPiece(newPosition).getTeamColor() != board.getPiece(oldPosition).getTeamColor()) {
                 return newMove;
             }
