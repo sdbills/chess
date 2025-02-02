@@ -98,7 +98,11 @@ public class ChessGame {
                 || board.getPiece(startPosition).getTeamColor() != teamTurn) {
             throw new InvalidMoveException();
         } else {
-            board.addPiece(move.getEndPosition(),board.getPiece(startPosition));
+            ChessPiece piece = board.getPiece(startPosition);
+            if (move.getPromotionPiece() != null) {
+                piece = new ChessPiece(piece.getTeamColor(),move.getPromotionPiece());
+            }
+            board.addPiece(move.getEndPosition(),piece);
             board.addPiece(startPosition,null);
         }
         changeTeam();
