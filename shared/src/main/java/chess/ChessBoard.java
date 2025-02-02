@@ -14,8 +14,19 @@ import static chess.ChessPiece.PieceType.*;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    ChessPiece[][] board = new ChessPiece[8][8];
+    ChessPiece[][] board;
     public ChessBoard() {
+        board = new ChessPiece[8][8];
+    }
+
+    public ChessBoard(ChessBoard oldBoard) {
+        board = new ChessPiece[8][8];
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                var position = new ChessPosition(i, j);
+                addPiece(position, oldBoard.getPiece(position));
+            }
+        }
     }
 
     /**
