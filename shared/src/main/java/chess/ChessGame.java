@@ -49,7 +49,12 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        return board.getPiece(startPosition).pieceMoves(board,startPosition);
+        var piece = board.getPiece(startPosition);
+        if (piece.getTeamColor() == teamTurn) {
+            var allMoves = piece.pieceMoves(board, startPosition);
+
+        }
+        return null;
     }
 
     /**
@@ -62,8 +67,17 @@ public class ChessGame {
         if (!validMoves(move.getStartPosition()).contains(move)) {
             throw new InvalidMoveException();
         } else {
-            board.addPiece(move.getStartPosition(),null);
             board.addPiece(move.getEndPosition(),board.getPiece(move.getStartPosition()));
+            board.addPiece(move.getStartPosition(),null);
+        }
+        changeTeam();
+    }
+
+    public void changeTeam() {
+        if (teamTurn == TeamColor.BLACK) {
+            teamTurn = TeamColor.WHITE;
+        } else {
+            teamTurn = TeamColor.BLACK;
         }
     }
 
