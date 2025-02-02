@@ -63,7 +63,24 @@ public class ChessGame {
         var piece = board.getPiece(startPosition);
         var team = piece.getTeamColor();
         var moves = piece.pieceMoves(board, startPosition);
-        moves.removeIf(move -> isInCheck(team) || isInCheckmate(team));
+        var valMoves = new ArrayList<ChessMove>();
+        for (var move : moves) {
+            var tempGame = new ChessGame(this);
+            tempGame.board.addPiece(move.getEndPosition(),piece);
+            tempGame.board.addPiece(move.getStartPosition(),null);
+            if (!tempGame.isInCheck(team)) {
+                valMoves.add(move);
+            }
+        }
+        return valMoves;
+    }
+
+    public Collection<ChessMove> allValidMoves(TeamColor team) {
+        var positions = board.getTeamPositions(team);
+        ArrayList<ChessMove> moves = new ArrayList<>();
+        for (var position : positions) {
+            moves.addAll(validMoves(position));
+        }
         return moves;
     }
 
@@ -99,7 +116,7 @@ public class ChessGame {
         teamTurn = otherTeam(teamTurn);
     }
 
-    private Collection<ChessMove> getAllTeamMoves(TeamColor team) {
+    private Collection<ChessMove> allTeamMoves(TeamColor team) {
         var moves = new ArrayList<ChessMove>();
         var positions = board.getTeamPositions(team);
         for (var position : positions) {
@@ -108,7 +125,6 @@ public class ChessGame {
         return moves;
     }
 
-
     /**
      * Determines if the given team is in check
      *
@@ -116,8 +132,12 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        var moves = getAllTeamMoves(teamColor);
-
+        var moves = allTeamMoves(otherTeam(teamColor));
+        for (var move : moves) {
+            if (move.getEndPosition().equals(board.getKingPosition(teamColor))) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -128,7 +148,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        return !getAllTeamMoves(teamColor).isEmpty() && isInCheck(teamColor);
+        return allValidMoves(teamColor).isEmpty() && isInCheck(teamColor);
     }
 
     /**
@@ -139,7 +159,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        return !getAllTeamMoves(teamColor).isEmpty();
+        return allValidMoves(teamColor).isEmpty() && !isInCheck(teamColor);
     }
 
     /**
