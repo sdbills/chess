@@ -15,7 +15,9 @@ public class ChessGame {
     TeamColor teamTurn;
 
     public ChessGame() {
-
+        board = new ChessBoard();
+        teamTurn = TeamColor.WHITE;
+        board.resetBoard();
     }
 
     /**
@@ -80,12 +82,16 @@ public class ChessGame {
         changeTeam();
     }
 
-    private void changeTeam() {
+    private TeamColor otherTeam(TeamColor team) {
         if (teamTurn == TeamColor.BLACK) {
-            teamTurn = TeamColor.WHITE;
+            return TeamColor.WHITE;
         } else {
-            teamTurn = TeamColor.BLACK;
+            return TeamColor.BLACK;
         }
+    }
+
+    private void changeTeam() {
+        teamTurn = otherTeam(teamTurn);
     }
 
     private Collection<ChessMove> getAllTeamMoves(TeamColor team) {
@@ -104,6 +110,8 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        var moves = getAllTeamMoves(teamColor);
+
         return false;
     }
 
@@ -114,7 +122,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        return false;
+        return !getAllTeamMoves(teamColor).isEmpty() && isInCheck(teamColor);
     }
 
     /**
@@ -125,7 +133,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        return false;
+        return !getAllTeamMoves(teamColor).isEmpty();
     }
 
     /**
