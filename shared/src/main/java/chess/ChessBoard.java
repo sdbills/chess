@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 
 import static chess.ChessPiece.PieceType.*;
@@ -54,6 +56,20 @@ public class ChessBoard {
 
     public boolean isEmptyPosition(ChessPosition position) {
         return getPiece(position) == null;
+    }
+
+    public Collection<ChessPosition> getTeamPositions(ChessGame.TeamColor team) {
+        ArrayList<ChessPosition> positions = new ArrayList<>();
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                var position = new ChessPosition(i, j);
+                var piece = getPiece(position);
+                if (piece != null && piece.getTeamColor() == team) {
+                    positions.add(position);
+                }
+            }
+        }
+        return positions;
     }
 
     @Override
