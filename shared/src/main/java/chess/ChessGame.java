@@ -20,6 +20,11 @@ public class ChessGame {
         board.resetBoard();
     }
 
+    public ChessGame(ChessGame game) {
+        board = new ChessBoard(game.board);
+        teamTurn = game.teamTurn;
+    }
+
     /**
      * @return Which team's turn it is
      */
@@ -83,7 +88,7 @@ public class ChessGame {
     }
 
     private TeamColor otherTeam(TeamColor team) {
-        if (teamTurn == TeamColor.BLACK) {
+        if (team == TeamColor.BLACK) {
             return TeamColor.WHITE;
         } else {
             return TeamColor.BLACK;
@@ -102,6 +107,7 @@ public class ChessGame {
         }
         return moves;
     }
+
 
     /**
      * Determines if the given team is in check
