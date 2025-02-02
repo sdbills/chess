@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -79,12 +80,21 @@ public class ChessGame {
         changeTeam();
     }
 
-    public void changeTeam() {
+    private void changeTeam() {
         if (teamTurn == TeamColor.BLACK) {
             teamTurn = TeamColor.WHITE;
         } else {
             teamTurn = TeamColor.BLACK;
         }
+    }
+
+    private Collection<ChessMove> getAllTeamMoves(TeamColor team) {
+        var moves = new ArrayList<ChessMove>();
+        var positions = board.getTeamPositions(team);
+        for (var position : positions) {
+            moves.addAll(board.getPiece(position).pieceMoves(board,position));
+        }
+        return moves;
     }
 
     /**
