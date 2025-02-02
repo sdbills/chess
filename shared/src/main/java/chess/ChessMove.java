@@ -53,7 +53,7 @@ public class ChessMove {
         return promotionPiece;
     }
 
-    public boolean isValidMove() {
+    public boolean isLegitMove() {
         return !endPosition.equals(startPosition) && startPosition.isValid() && endPosition.isValid();
     }
 

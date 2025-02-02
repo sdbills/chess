@@ -44,7 +44,7 @@ public class PawnMovesCalculator extends PiecesMovesCalculator{
     @Override
     public ChessMove createLegalMove(ChessBoard board, ChessPosition oldPosition, ChessPosition newPosition) {
         var newMove = new ChessMove(oldPosition,newPosition);
-        if (newMove.isValidMove()) {
+        if (newMove.isLegitMove()) {
             if (board.isEmptyPosition(newPosition) && newPosition.getColumn() == oldPosition.getColumn()) {
                 return newMove;
             }
