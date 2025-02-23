@@ -31,7 +31,7 @@ public class Server {
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::registerHandler);
         Spark.post("/session", this::loginHandler);
-        Spark.delete("/sessino", this::logoutHandler);
+        Spark.delete("/session", this::logoutHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -46,7 +46,7 @@ public class Server {
     private Object clear(Request req, Response res) throws DataAccessException {
         userService.clear();
         gameService.clear();
-        return "";
+        return "{}";
     }
 
     private Object registerHandler(Request req, Response res) throws DataAccessException {
@@ -64,6 +64,6 @@ public class Server {
     private Object logoutHandler(Request req, Response res) throws DataAccessException {
         String authToken = req.headers("authorization");
         userService.logout(authToken);
-        return "";
+        return "{}";
     }
 }
