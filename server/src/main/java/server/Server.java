@@ -31,14 +31,22 @@ public class Server {
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::registerHandler);
         Spark.post("/session", this::loginHandler);
+        Spark.delete("/sessino", this::logoutHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
     }
 
+
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    private Object clear(Request req, Response res) throws DataAccessException {
+        userService.clear();
+        gameService.clear();
+        return "";
     }
 
     private Object registerHandler(Request req, Response res) throws DataAccessException {
@@ -53,9 +61,9 @@ public class Server {
         return new Gson().toJson(result);
     }
 
-    private Object clear(Request req, Response res) throws DataAccessException {
-        userService.clear();
-        gameService.clear();
-        return "{}";
+    private Object logoutHandler(Request req, Response res) throws DataAccessException {
+        String authToken = req.headers("authorization");
+        userService.logout(authToken);
+        return "";
     }
 }

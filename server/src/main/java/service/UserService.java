@@ -40,6 +40,11 @@ public class UserService extends Service{
         super.clear();
     }
 
+    public void logout(String authToken) throws DataAccessException {
+        var auth = authenticate(authToken);
+        authDAO.deleteAuth(auth);
+    }
+
     private AuthData createAuth(String username) throws DataAccessException {
         var authToken = UUID.randomUUID().toString();
         AuthData auth = new AuthData(authToken,username);
