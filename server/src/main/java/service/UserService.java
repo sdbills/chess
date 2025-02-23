@@ -20,13 +20,19 @@ public class UserService extends Service{
         var user = userDAO.getUser(req.username());
         if (user == null) {
             userDAO.createUser(new UserData(req.username(), req.password(), req.email()));
+        } else {
+            throw new DataAccessException("Bad Request");
         }
         return createAuth(req.username());
     }
 
     public AuthData login(UserData req) throws DataAccessException {
-
-        return createAuth(req.username());
+        var user = userDAO.getUser(req.username());
+        if (user.password().equals(req.password()))
+            return createAuth(req.username());
+        else {
+            throw new DataAccessException("Bad Request");
+        }
     }
 
     public void clear() throws DataAccessException {

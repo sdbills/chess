@@ -30,6 +30,7 @@ public class Server {
         //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::registerHandler);
+        Spark.post("/session", this::loginHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -43,6 +44,12 @@ public class Server {
     private Object registerHandler(Request req, Response res) throws DataAccessException {
         var user = new Gson().fromJson(req.body(), UserData.class);
         AuthData result = userService.register(user);
+        return new Gson().toJson(result);
+    }
+
+    private Object loginHandler(Request req, Response res) throws DataAccessException {
+        var user = new Gson().fromJson(req.body(),UserData.class);
+        AuthData result = userService.login(user);
         return new Gson().toJson(result);
     }
 
