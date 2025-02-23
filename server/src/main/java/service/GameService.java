@@ -5,6 +5,8 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import model.GameData;
+import request.joinRequest;
+
 import java.util.Collection;
 
 public class GameService extends Service {
@@ -36,7 +38,36 @@ public class GameService extends Service {
 
         var games = new java.util.ArrayList<>(gameDAO.listGames());
         games.replaceAll(game -> new GameData(game.gameID(),
-                game.whiteUsername(), game.whiteUsername(), game.gameName(), null));
+                game.whiteUsername(), game.blackUsername(), game.gameName(), null));
         return games;
+    }
+
+    public void joinGame(joinRequest req, String authToken) throws DataAccessException {
+        var auth = authenticate(authToken);
+        var game = gameDAO.getGame(req.gameID());
+        if (game == null) {
+            throw new DataAccessException("Bad Request");
+        }
+
+        var whiteUser = game.whiteUsername();
+        var blackUser = game.blackUsername();
+
+        if (req.playerColor().equals("WHITE")) {
+            if (game.whiteUsername() == null) {
+                whiteUser = auth.username();
+            } else {
+                throw new DataAccessException("Already Taken");
+            }
+        } else if (req.playerColor().equals("BLACK")) {
+            if (game.blackUsername() == null) {
+                blackUser = auth.username();
+            } else {
+                throw new DataAccessException("Already Taken");
+            }
+        } else {
+            throw new DataAccessException("Bad Request");
+        }
+        gameDAO.updateGame(new GameData(game.gameID(), whiteUser,
+                blackUser, game.gameName(), game.game()));
     }
 }
