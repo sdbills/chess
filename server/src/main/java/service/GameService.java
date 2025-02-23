@@ -49,6 +49,9 @@ public class GameService extends Service {
 
     public void joinGame(JoinRequest req, String authToken) throws DataAccessException, ResponseException {
         var auth = authenticate(authToken);
+        if (req.gameID() == null) {
+            throw new ResponseException(400, "bad request");
+        }
         var game = gameDAO.getGame(req.gameID());
         if (game == null) {
             throw new ResponseException(400, "bad request");
