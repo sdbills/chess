@@ -1,9 +1,9 @@
-package dataaccess;
+package service;
 
-public class ResponseException extends Exception{
+public class ServiceException extends Exception{
     private final int statusCode;
 
-    public ResponseException(int statusCode, String message) {
+    public ServiceException(int statusCode, String message) {
         super(message);
         this.statusCode = statusCode;
     }
