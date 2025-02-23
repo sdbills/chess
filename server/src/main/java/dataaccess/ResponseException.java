@@ -11,4 +11,8 @@ public class ResponseException extends Exception{
     public int getStatusCode() {
         return statusCode;
     }
+
+    public String toJson() {
+        return "{ \"message\": \"Error: %s\" }".formatted(getMessage());
+    }
 }

@@ -95,11 +95,11 @@ public class Server {
 
     private void responseExceptionHandler(ResponseException ex, Request req, Response res) {
         res.status(ex.getStatusCode());
-        res.body(new Gson().toJson(ex.getMessage()));
+        res.body(ex.toJson());
     }
 
     private void dataExceptionHandler(DataAccessException ex, Request req, Response res) {
         res.status(500);
-        res.body(new Gson().toJson(ex.getMessage()));
+        res.body(ex.toJson());
     }
 }

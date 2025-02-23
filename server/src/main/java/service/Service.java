@@ -20,7 +20,7 @@ public class Service {
         if (auth != null) {
             return auth;
         } else {
-            throw new ResponseException(401, "Error: unauthorized");
+            throw new ResponseException(401, "unauthorized");
         }
     }
 }

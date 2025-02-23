@@ -30,7 +30,7 @@ public class GameService extends Service {
                     null, req.gameName(), new ChessGame());
             return gameDAO.createGame(game);
         } else {
-            throw new ResponseException(400, "Error: bad request");
+            throw new ResponseException(400, "bad request");
         }
     }
 
@@ -47,7 +47,7 @@ public class GameService extends Service {
         var auth = authenticate(authToken);
         var game = gameDAO.getGame(req.gameID());
         if (game == null) {
-            throw new ResponseException(400, "Error: bad request");
+            throw new ResponseException(400, "bad request");
         }
 
         var whiteUser = game.whiteUsername();
@@ -57,16 +57,16 @@ public class GameService extends Service {
             if (game.whiteUsername() == null) {
                 whiteUser = auth.username();
             } else {
-                throw new ResponseException(403, "Error: already taken");
+                throw new ResponseException(403, "already taken");
             }
         } else if (req.playerColor().equals("BLACK")) {
             if (game.blackUsername() == null) {
                 blackUser = auth.username();
             } else {
-                throw new ResponseException(403, "Error: already taken");
+                throw new ResponseException(403, "already taken");
             }
         } else {
-            throw new ResponseException(400, "Error: bad request");
+            throw new ResponseException(400, "bad request");
         }
         gameDAO.updateGame(new GameData(game.gameID(), whiteUser,
                 blackUser, game.gameName(), game.game()));
