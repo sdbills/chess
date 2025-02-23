@@ -37,6 +37,8 @@ public class Server {
         Spark.post("/game", this::createGameHandler);
         Spark.get("/game", this::listGamesHandler);
         Spark.put("/game", this::joinGameHandler);
+        Spark.exception(ResponseException.class, this::responseExceptionHandler);
+        Spark.exception(DataAccessException.class ,this::dataExceptionHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -89,5 +91,15 @@ public class Server {
         var joinReq = new Gson().fromJson(req.body(), joinRequest.class);
         gameService.joinGame(joinReq, authToken);
         return "{}";
+    }
+
+    private void responseExceptionHandler(ResponseException ex, Request req, Response res) {
+        res.status(ex.getStatusCode());
+        res.body(new Gson().toJson(ex.getMessage()));
+    }
+
+    private void dataExceptionHandler(DataAccessException ex, Request req, Response res) {
+        res.status(500);
+        res.body(new Gson().toJson(ex.getMessage()));
     }
 }
