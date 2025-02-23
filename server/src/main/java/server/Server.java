@@ -61,7 +61,7 @@ public class Server {
         return new Gson().toJson(result);
     }
 
-    private Object loginHandler(Request req, Response res) throws DataAccessException {
+    private Object loginHandler(Request req, Response res) throws DataAccessException, ResponseException {
         var userReq = new Gson().fromJson(req.body(),UserData.class);
         AuthData result = userService.login(userReq);
         return new Gson().toJson(result);

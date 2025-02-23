@@ -30,12 +30,12 @@ public class UserService extends Service{
         return createAuth(req.username());
     }
 
-    public AuthData login(UserData req) throws DataAccessException {
+    public AuthData login(UserData req) throws DataAccessException, ResponseException {
         var user = userDAO.getUser(req.username());
         if (user.password().equals(req.password()))
             return createAuth(req.username());
         else {
-            throw new DataAccessException("Bad Request");
+            throw new ResponseException(401,"Error: unauthorized");
         }
     }
 
