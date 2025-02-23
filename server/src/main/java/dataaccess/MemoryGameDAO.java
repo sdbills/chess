@@ -7,14 +7,15 @@ import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
     private final HashMap<Integer, GameData> games = new HashMap<>();
-    private int lastID = 1;
+    private int lastID = 0;
 
     @Override
-    public void createGame(GameData game) throws DataAccessException {
+    public int createGame(GameData game) throws DataAccessException {
         lastID++;
         var newGame = new GameData(lastID, game.whiteUsername(), game.blackUsername(),
                             game.gameName(),game.game());
         games.put(lastID,newGame);
+        return lastID;
     }
 
     @Override

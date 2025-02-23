@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.*;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import service.GameService;
 import service.UserService;
@@ -32,11 +33,11 @@ public class Server {
         Spark.post("/user", this::registerHandler);
         Spark.post("/session", this::loginHandler);
         Spark.delete("/session", this::logoutHandler);
+        Spark.post("/game", this::createGameHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
     }
-
 
     public void stop() {
         Spark.stop();
@@ -50,14 +51,14 @@ public class Server {
     }
 
     private Object registerHandler(Request req, Response res) throws DataAccessException {
-        var user = new Gson().fromJson(req.body(), UserData.class);
-        AuthData result = userService.register(user);
+        var userReq = new Gson().fromJson(req.body(), UserData.class);
+        AuthData result = userService.register(userReq);
         return new Gson().toJson(result);
     }
 
     private Object loginHandler(Request req, Response res) throws DataAccessException {
-        var user = new Gson().fromJson(req.body(),UserData.class);
-        AuthData result = userService.login(user);
+        var userReq = new Gson().fromJson(req.body(),UserData.class);
+        AuthData result = userService.login(userReq);
         return new Gson().toJson(result);
     }
 
@@ -65,5 +66,12 @@ public class Server {
         String authToken = req.headers("authorization");
         userService.logout(authToken);
         return "{}";
+    }
+
+    private Object createGameHandler(Request req, Response res) throws DataAccessException {
+        String authToken = req.headers("authorization");
+        var gameReq = new Gson().fromJson(req.body(), GameData.class);
+        var gameID = gameService.createGame(gameReq, authToken);
+        return new Gson().toJson(gameID);
     }
 }
