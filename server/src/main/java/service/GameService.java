@@ -10,7 +10,8 @@ import request.JoinRequest;
 import response.CreateResponse;
 import response.ListResponse;
 
-import java.util.Collection;
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
 
 public class GameService extends Service {
     GameDAO gameDAO;
@@ -56,20 +57,21 @@ public class GameService extends Service {
         var whiteUser = game.whiteUsername();
         var blackUser = game.blackUsername();
 
-        if (req.playerColor().equals("WHITE")) {
+        if (req.playerColor() == null) {
+            throw new ResponseException(400, "bad request");
+        }
+        else if (req.playerColor().equals(WHITE)) {
             if (game.whiteUsername() == null) {
                 whiteUser = auth.username();
             } else {
                 throw new ResponseException(403, "already taken");
             }
-        } else if (req.playerColor().equals("BLACK")) {
+        } else if (req.playerColor().equals(BLACK)) {
             if (game.blackUsername() == null) {
                 blackUser = auth.username();
             } else {
                 throw new ResponseException(403, "already taken");
             }
-        } else {
-            throw new ResponseException(400, "bad request");
         }
         gameDAO.updateGame(new GameData(game.gameID(), whiteUser,
                 blackUser, game.gameName(), game.game()));
