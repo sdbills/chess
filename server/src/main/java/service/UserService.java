@@ -44,7 +44,7 @@ public class UserService extends Service{
         super.clear();
     }
 
-    public void logout(String authToken) throws DataAccessException {
+    public void logout(String authToken) throws DataAccessException, ResponseException {
         var auth = authenticate(authToken);
         authDAO.deleteAuth(auth);
     }

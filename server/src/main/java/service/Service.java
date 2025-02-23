@@ -14,7 +14,13 @@ public class Service {
         authDAO.clear();
     }
 
-    public AuthData authenticate(String authToken) throws DataAccessException {
-        return authDAO.getAuth(authToken);
+    public AuthData authenticate(String authToken) throws DataAccessException, ResponseException {
+
+        var auth = authDAO.getAuth(authToken);
+        if (auth != null) {
+            return auth;
+        } else {
+            throw new ResponseException(401, "Error: unauthorized");
+        }
     }
 }
