@@ -5,7 +5,7 @@ import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import request.joinRequest;
+import request.JoinRequest;
 import service.GameService;
 import service.UserService;
 import spark.*;
@@ -76,8 +76,8 @@ public class Server {
     private Object createGameHandler(Request req, Response res) throws DataAccessException, ResponseException {
         String authToken = req.headers("authorization");
         var gameReq = new Gson().fromJson(req.body(), GameData.class);
-        var gameID = gameService.createGame(gameReq, authToken);
-        return new Gson().toJson(gameID);
+        var gameRes = gameService.createGame(gameReq, authToken);
+        return new Gson().toJson(gameRes);
     }
 
     private Object listGamesHandler(Request req, Response res) throws DataAccessException, ResponseException {
@@ -88,7 +88,7 @@ public class Server {
 
     private Object joinGameHandler(Request req, Response res) throws DataAccessException, ResponseException {
         String authToken = req.headers("authorization");
-        var joinReq = new Gson().fromJson(req.body(), joinRequest.class);
+        var joinReq = new Gson().fromJson(req.body(), JoinRequest.class);
         gameService.joinGame(joinReq, authToken);
         return "{}";
     }
