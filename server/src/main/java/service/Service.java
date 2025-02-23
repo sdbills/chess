@@ -14,13 +14,13 @@ public class Service {
         authDAO.clear();
     }
 
-    public AuthData authenticate(String authToken) throws DataAccessException, ResponseException {
+    public AuthData authenticate(String authToken) throws DataAccessException, ServiceException {
 
         var auth = authDAO.getAuth(authToken);
         if (auth != null) {
             return auth;
         } else {
-            throw new ResponseException(401, "unauthorized");
+            throw new ServiceException(401, "unauthorized");
         }
     }
 }
