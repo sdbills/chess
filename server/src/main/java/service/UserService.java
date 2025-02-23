@@ -39,14 +39,14 @@ public class UserService extends Service{
         }
     }
 
-    public void clear() throws DataAccessException {
-        userDAO.clear();
-        super.clear();
-    }
-
     public void logout(String authToken) throws DataAccessException, ResponseException {
         var auth = authenticate(authToken);
         authDAO.deleteAuth(auth);
+    }
+
+    public void clear() throws DataAccessException {
+        userDAO.clear();
+        super.clear();
     }
 
     private AuthData createAuth(String username) throws DataAccessException {
@@ -55,5 +55,4 @@ public class UserService extends Service{
         authDAO.createAuth(auth);
         return auth;
     }
-
 }
