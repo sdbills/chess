@@ -34,6 +34,7 @@ public class Server {
         Spark.post("/session", this::loginHandler);
         Spark.delete("/session", this::logoutHandler);
         Spark.post("/game", this::createGameHandler);
+        Spark.get("/game", this::listGamesHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -73,5 +74,11 @@ public class Server {
         var gameReq = new Gson().fromJson(req.body(), GameData.class);
         var gameID = gameService.createGame(gameReq, authToken);
         return new Gson().toJson(gameID);
+    }
+
+    private Object listGamesHandler(Request req, Response res) throws DataAccessException{
+        String authToken = req.headers("authorization");
+        var games = gameService.listGames(authToken);
+        return new Gson().toJson(games);
     }
 }

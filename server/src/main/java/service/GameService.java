@@ -5,6 +5,7 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import model.GameData;
+import java.util.Collection;
 
 public class GameService extends Service {
     GameDAO gameDAO;
@@ -28,5 +29,14 @@ public class GameService extends Service {
         } else {
             throw new DataAccessException("Already Taken");
         }
+    }
+
+    public Collection<GameData> listGames(String authToken) throws DataAccessException {
+        authenticate(authToken);
+
+        var games = new java.util.ArrayList<>(gameDAO.listGames());
+        games.replaceAll(game -> new GameData(game.gameID(),
+                game.whiteUsername(), game.whiteUsername(), game.gameName(), null));
+        return games;
     }
 }
