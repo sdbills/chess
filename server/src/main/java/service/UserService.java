@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
+import dataaccess.ResponseException;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
@@ -16,12 +17,15 @@ public class UserService extends Service{
         this.userDAO = userDAO;
     }
 
-    public AuthData register(UserData req) throws DataAccessException {
+    public AuthData register(UserData req) throws DataAccessException, ResponseException {
+        if (req.username() == null || req.password() == null || req.email() == null) {
+            throw new ResponseException(400, "Error: bad request");
+        }
         var user = userDAO.getUser(req.username());
         if (user == null) {
             userDAO.createUser(new UserData(req.username(), req.password(), req.email()));
         } else {
-            throw new DataAccessException("Bad Request");
+            throw new ResponseException(403,"Error: already taken");
         }
         return createAuth(req.username());
     }

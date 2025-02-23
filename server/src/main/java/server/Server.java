@@ -55,7 +55,7 @@ public class Server {
         return "{}";
     }
 
-    private Object registerHandler(Request req, Response res) throws DataAccessException {
+    private Object registerHandler(Request req, Response res) throws DataAccessException, ResponseException {
         var userReq = new Gson().fromJson(req.body(), UserData.class);
         AuthData result = userService.register(userReq);
         return new Gson().toJson(result);
