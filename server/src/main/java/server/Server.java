@@ -27,10 +27,9 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
 
-        //This line initializes the server and can be removed once you have a functioning endpoint 
-        Spark.init();
-
-        Spark.post("/user", this::register);
+        //This line initializes the server and can be removed once you have a functioning endpoint
+        Spark.delete("/db", this::clear);
+        Spark.post("/user", this::registerHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -41,9 +40,15 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private Object register(Request req, Response res) throws DataAccessException {
+    private Object registerHandler(Request req, Response res) throws DataAccessException {
         var user = new Gson().fromJson(req.body(), UserData.class);
         AuthData result = userService.register(user);
         return new Gson().toJson(result);
+    }
+
+    private Object clear(Request req, Response res) throws DataAccessException {
+        userService.clear();
+        gameService.clear();
+        return "{}";
     }
 }

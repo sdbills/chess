@@ -9,24 +9,29 @@ import model.UserData;
 import java.util.UUID;
 
 public class UserService extends Service{
-    private final UserDAO userDao;
+    private final UserDAO userDAO;
 
-    public UserService(UserDAO userDao, AuthDAO authDAO) {
+    public UserService(UserDAO userDAO, AuthDAO authDAO) {
         super(authDAO);
-        this.userDao = userDao;
+        this.userDAO = userDAO;
     }
 
     public AuthData register(UserData req) throws DataAccessException {
-        var user = userDao.getUser(req.username());
+        var user = userDAO.getUser(req.username());
         if (user == null) {
-            userDao.createUser(new UserData(req.username(), req.password(), req.email()));
+            userDAO.createUser(new UserData(req.username(), req.password(), req.email()));
         }
-        return login(req);
+        return createAuth(req.username());
     }
 
     public AuthData login(UserData req) throws DataAccessException {
 
         return createAuth(req.username());
+    }
+
+    public void clear() throws DataAccessException {
+        userDAO.clear();
+        super.clear();
     }
 
     private AuthData createAuth(String username) throws DataAccessException {

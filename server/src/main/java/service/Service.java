@@ -3,9 +3,13 @@ package service;
 import dataaccess.*;
 
 public class Service {
-    protected final AuthDAO authDAO;
+    protected AuthDAO authDAO;
 
     public Service(AuthDAO authDAO) {
         this.authDAO = authDAO;
+    }
+
+    public void clear() throws DataAccessException {
+        authDAO.clear();
     }
 }
