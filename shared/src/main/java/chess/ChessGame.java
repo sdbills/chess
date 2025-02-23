@@ -79,10 +79,12 @@ public class ChessGame {
             return null;
         }
 
+
         var piece = board.getPiece(startPosition);
         var team = piece.getTeamColor();
         var moves = piece.pieceMoves(board, startPosition);
         var valMoves = new ArrayList<ChessMove>();
+        //Move doesn't put into check
         for (var move : moves) {
             var tempGame = new ChessGame(this);
             tempGame.board.addPiece(move.getEndPosition(),piece);
