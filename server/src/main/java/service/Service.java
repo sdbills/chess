@@ -15,7 +15,6 @@ public class Service {
     }
 
     public AuthData authenticate(String authToken) throws DataAccessException, ServiceException {
-
         var auth = authDAO.getAuth(authToken);
         if (auth != null) {
             return auth;
