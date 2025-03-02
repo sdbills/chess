@@ -9,7 +9,9 @@ import request.JoinRequest;
 import service.GameService;
 import service.ServiceException;
 import service.UserService;
-import spark.*;
+import spark.Request;
+import spark.Response;
+import spark.Spark;
 
 public class Server {
     private final UserService userService;
@@ -39,7 +41,7 @@ public class Server {
         Spark.get("/game", this::listGamesHandler);
         Spark.put("/game", this::joinGameHandler);
         Spark.exception(ServiceException.class, this::responseExceptionHandler);
-        Spark.exception(DataAccessException.class ,this::dataExceptionHandler);
+        Spark.exception(DataAccessException.class, this::dataExceptionHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -63,7 +65,7 @@ public class Server {
     }
 
     private Object loginHandler(Request req, Response res) throws DataAccessException, ServiceException {
-        var userReq = new Gson().fromJson(req.body(),UserData.class);
+        var userReq = new Gson().fromJson(req.body(), UserData.class);
         AuthData result = userService.login(userReq);
         return new Gson().toJson(result);
     }

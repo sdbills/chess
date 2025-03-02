@@ -4,12 +4,12 @@ import model.AuthData;
 
 import java.util.HashMap;
 
-public class MemoryAuthDAO implements AuthDAO{
+public class MemoryAuthDAO implements AuthDAO {
     private final HashMap<String, AuthData> auths = new HashMap<>();
 
     @Override
     public void createAuth(AuthData auth) throws DataAccessException {
-        auths.put(auth.authToken(),auth);
+        auths.put(auth.authToken(), auth);
     }
 
     @Override

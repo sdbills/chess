@@ -61,8 +61,7 @@ public class GameService extends Service {
 
         if (req.playerColor() == null) {
             throw new ServiceException(400, "bad request");
-        }
-        else if (req.playerColor().equals(WHITE)) {
+        } else if (req.playerColor().equals(WHITE)) {
             if (game.whiteUsername() == null) {
                 whiteUser = auth.username();
             } else {

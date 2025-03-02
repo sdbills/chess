@@ -5,7 +5,7 @@ import model.GameData;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class MemoryGameDAO implements GameDAO{
+public class MemoryGameDAO implements GameDAO {
     private final HashMap<Integer, GameData> games = new HashMap<>();
     private int lastID = 0;
 
@@ -13,8 +13,8 @@ public class MemoryGameDAO implements GameDAO{
     public int createGame(GameData game) throws DataAccessException {
         lastID++;
         var newGame = new GameData(lastID, game.whiteUsername(), game.blackUsername(),
-                            game.gameName(),game.game());
-        games.put(lastID,newGame);
+                game.gameName(), game.game());
+        games.put(lastID, newGame);
         return lastID;
     }
 
@@ -41,11 +41,6 @@ public class MemoryGameDAO implements GameDAO{
     @Override
     public Collection<GameData> listGames() throws DataAccessException {
         return games.values();
-    }
-
-    @Override
-    public void deleteGame(GameData game) throws DataAccessException {
-        games.remove(game.gameID());
     }
 
     @Override

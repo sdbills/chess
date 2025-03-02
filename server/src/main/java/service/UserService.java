@@ -8,7 +8,7 @@ import model.UserData;
 
 import java.util.UUID;
 
-public class UserService extends Service{
+public class UserService extends Service {
     private final UserDAO userDAO;
 
     public UserService(UserDAO userDAO, AuthDAO authDAO) {
@@ -24,17 +24,17 @@ public class UserService extends Service{
         if (user == null) {
             userDAO.createUser(new UserData(req.username(), req.password(), req.email()));
         } else {
-            throw new ServiceException(403,"already taken");
+            throw new ServiceException(403, "already taken");
         }
         return createAuth(req.username());
     }
 
     public AuthData login(UserData req) throws DataAccessException, ServiceException {
         var user = userDAO.getUser(req.username());
-        if (user != null && user.password().equals(req.password()))
+        if (user != null && user.password().equals(req.password())) {
             return createAuth(req.username());
-        else {
-            throw new ServiceException(401,"unauthorized");
+        } else {
+            throw new ServiceException(401, "unauthorized");
         }
     }
 
@@ -50,7 +50,7 @@ public class UserService extends Service{
 
     private AuthData createAuth(String username) throws DataAccessException {
         var authToken = UUID.randomUUID().toString();
-        AuthData auth = new AuthData(authToken,username);
+        AuthData auth = new AuthData(authToken, username);
         authDAO.createAuth(auth);
         return auth;
     }
