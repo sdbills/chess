@@ -8,17 +8,15 @@ import java.util.List;
 public class SqlGameDAO extends SqlDAO implements GameDAO{
 
     public SqlGameDAO() throws DataAccessException {
-        String[] createStatements = {
-            """
+        String[] createStatements = {"""
         CREATE TABLE IF NOT EXISTS game (
         `gameID` int NOT NULL AUTO_INCREMENT,
         `whiteUsername` varchar(256),
         `blackUsername` varchar(256),
         `gameName` varchar(256),
         `game` varchar(256) NOT NULL,
-        PRIMARY KEY (`id`)
-        )
-        """
+        PRIMARY KEY (`gameID`)
+        )"""
         };
         configureDatabase(createStatements);
     }

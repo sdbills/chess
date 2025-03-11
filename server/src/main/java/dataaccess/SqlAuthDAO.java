@@ -2,20 +2,15 @@ package dataaccess;
 
 import model.AuthData;
 
-import java.sql.SQLException;
-
 public class SqlAuthDAO extends SqlDAO implements AuthDAO {
 
     public SqlAuthDAO() throws DataAccessException {
-        String[] createStatements = {
-                """
+        String[] createStatements = {"""
             CREATE TABLE IF NOT EXISTS auth (
-            `id` int NOT NULL AUTO_INCREMENT,
             `authToken` varchar(256) NOT NULL,
             `username` varchar(256) NOT NULL,
-            PRIMARY KEY (`id`)
-            )
-            """
+            PRIMARY KEY (`authToken`)
+            )"""
         };
         configureDatabase(createStatements);
     }

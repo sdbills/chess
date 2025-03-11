@@ -18,11 +18,15 @@ public class Server {
     private final GameService gameService;
 
     public Server() {
-        UserDAO userDAO = new MemoryUserDAO();
-        GameDAO gameDAO = new MemoryGameDAO();
-        AuthDAO authDAO = new MemoryAuthDAO();
-        this.userService = new UserService(userDAO, authDAO);
-        this.gameService = new GameService(gameDAO, authDAO);
+        try {
+            UserDAO userDAO = new SqlUserDAO();
+            GameDAO gameDAO = new SqlGameDAO();
+            AuthDAO authDAO = new SqlAuthDAO();
+            this.userService = new UserService(userDAO, authDAO);
+            this.gameService = new GameService(gameDAO, authDAO);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int run(int desiredPort) {
