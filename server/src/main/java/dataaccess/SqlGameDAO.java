@@ -69,7 +69,7 @@ public class SqlGameDAO extends SqlDAO implements GameDAO{
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Could not retrieve game: " + e.getMessage());
+            throw new DataAccessException("Failed to retrieve game: " + e.getMessage());
         }
     }
 
@@ -91,21 +91,21 @@ public class SqlGameDAO extends SqlDAO implements GameDAO{
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException("Could not retrieve game: " + e.getMessage());
+            throw new DataAccessException("Failed to retrieve game: " + e.getMessage());
         }
     }
 
     @Override
     public void updateGame(GameData game) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("UPDATE game SET whiteUsername=?,blackUsername=? where gameID=?")) {
+            try (var statement = conn.prepareStatement("UPDATE game SET whiteUsername=?, blackUsername=? where gameID=?")) {
                 statement.setString(1,game.whiteUsername());
                 statement.setString(2,game.blackUsername());
                 statement.setInt(3,game.gameID());
                 statement.executeUpdate();
             }
-        }catch (SQLException e) {
-            throw new DataAccessException("Could add user: " + e.getMessage());
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to add user to game: " + e.getMessage());
         }
     }
 

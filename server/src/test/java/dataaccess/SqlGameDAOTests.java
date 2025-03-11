@@ -2,7 +2,6 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +63,7 @@ public class SqlGameDAOTests {
 
     @Test
     @DisplayName("Create Game null")
-    void createGameNegative() throws DataAccessException {
+    void createGameNegative() {
         var badGame = new GameData(null,null,null,null,null);
         assertThrows(DataAccessException.class, () -> gameDAO.createGame(badGame));
     }
@@ -103,6 +102,32 @@ public class SqlGameDAOTests {
     void getGameByIDNegative() throws DataAccessException {
         assertNull(gameDAO.getGame(0));
     }
+
+    @Test
+    @DisplayName("Update Game Join Good")
+    void updateGamePositive() throws DataAccessException, SQLException {
+        var id = gameDAO.createGame(testGame1);
+        var newGame = new GameData(id, "white","black", testGame1.gameName(), testGame1.game());
+        gameDAO.updateGame(newGame);
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT whiteUsername, blackUsername FROM game WHERE gameID=?")) {
+                statement.setInt(1, id);
+                try (var res = statement.executeQuery()) {
+                    res.next();
+                    assertEquals(res.getString("whiteUsername"), newGame.whiteUsername());
+                    assertEquals(res.getString("blackUsername"), newGame.blackUsername());
+                    assertFalse(res.next());
+                }
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("Update Game not in db")
+    void updateGameNegative() {
+        assertDoesNotThrow(() -> gameDAO.updateGame(new GameData(0,"white","black",null,null)));
+    }
+
 
 
 }
