@@ -2,12 +2,21 @@ package dataaccess;
 
 import model.UserData;
 
-import java.sql.SQLException;
-
-public class SqlUserDAO implements UserDAO{
+public class SqlUserDAO extends SqlDAO implements UserDAO {
 
     public SqlUserDAO() throws DataAccessException {
-        configureUserTable();
+        String[] createStatements = {
+                """
+            CREATE TABLE IF NOT EXISTS user (
+            `id` int NOT NULL AUTO_INCREMENT,
+            `username` varchar(256) NOT NULL,
+            `password` varchar(256) NOT NULL,
+            `email` varchar(256) NOT NULL,
+            PRIMARY KEY (`id`)
+            )
+            """
+        };
+        configureDatabase(createStatements);
     }
 
     @Override
@@ -24,28 +33,4 @@ public class SqlUserDAO implements UserDAO{
     public void clear() throws DataAccessException {
     }
 
-    private final String[] createStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS user (
-            `id` int NOT NULL AUTO_INCREMENT,
-            `username` varchar(256) NOT NULL,
-            `password` varchar(256) NOT NULL,
-            `email` varchar(256) NOT NULL,
-            PRIMARY KEY (`id`)
-            )
-            """
-    };
-
-    private void configureUserTable() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
-        }
-    }
 }
