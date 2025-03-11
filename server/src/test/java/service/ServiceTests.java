@@ -28,7 +28,7 @@ public class ServiceTests {
     static void createDAOs() throws DataAccessException {
         authDAO = new SqlAuthDAO();
         userDAO = new SqlUserDAO();
-        gameDAO = new MemoryGameDAO();
+        gameDAO = new SqlGameDAO();
     }
 
     @BeforeEach
@@ -115,7 +115,7 @@ public class ServiceTests {
     void listTestPositive() throws ServiceException, DataAccessException {
         authDAO.createAuth(testAuth);
         gameDAO.createGame(testGame);
-        gameDAO.createGame(new GameData(2,null,null,null,null));
+        gameDAO.createGame(new GameData(2,null,null,"null",null));
         var gameList = gameService.listGames(testAuth.authToken());
         assertEquals(2, gameList.games().size());
     }

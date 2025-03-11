@@ -172,7 +172,7 @@ public class SqlGameDAOTests {
 
         gameDAO.clear();
         try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("SELECT * FROM auth")) {
+            try (var statement = conn.prepareStatement("SELECT * FROM game")) {
                 try (var res = statement.executeQuery()) {
                     assertFalse(res.next());
                 }

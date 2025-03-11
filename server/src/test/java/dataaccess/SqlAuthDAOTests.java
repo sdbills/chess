@@ -93,6 +93,7 @@ public class SqlAuthDAOTests {
     @Test
     @DisplayName("Delete Auth not in db")
     void deleteAuthNegative() {
+        //Does nothing as intended
         assertDoesNotThrow(() -> authDAO.deleteAuth(testAuth));
     }
 
