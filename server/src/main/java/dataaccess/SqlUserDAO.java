@@ -38,7 +38,20 @@ public class SqlUserDAO extends SqlDAO implements UserDAO {
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        return null;
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT username, password, email FROM user where username=?")) {
+                statement.setString(1, username);
+                try (var res = statement.executeQuery()) {
+                    if (!res.next()) {
+                        return null;
+                    }
+                    res.next();
+                    return new UserData(username,res.getString("password"),res.getString("email"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("User not found: " + e.getMessage());
+        }
     }
 
     @Override
