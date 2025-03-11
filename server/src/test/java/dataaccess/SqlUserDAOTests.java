@@ -11,7 +11,7 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserDAOTests {
+public class SqlUserDAOTests {
 
     static UserDAO userDAO;
     UserData testUser = new UserData("User","Pass", "Mail");
