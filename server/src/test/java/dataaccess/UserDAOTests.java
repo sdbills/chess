@@ -45,4 +45,13 @@ public class UserDAOTests {
             }
         }
     }
+
+    @Test
+    @DisplayName("Create User Bad")
+    void createUserNegative() {
+        UserData badUser = new UserData(null,null,null);
+        assertThrows(DataAccessException.class, () -> userDAO.createUser(badUser));
+    }
+
+
 }
