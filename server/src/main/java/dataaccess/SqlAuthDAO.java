@@ -1,7 +1,6 @@
 package dataaccess;
 
 import model.AuthData;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
 
@@ -33,7 +32,20 @@ public class SqlAuthDAO extends SqlDAO implements AuthDAO {
 
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
-        return null;
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT username FROM auth where authToken=?")) {
+                statement.setString(1, authToken);
+                try (var res = statement.executeQuery()) {
+                    if (res.next()) {
+                        return new AuthData(authToken,res.getString("username"));
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Auth not found: " + e.getMessage());
+        }
     }
 
     @Override

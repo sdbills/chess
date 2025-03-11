@@ -54,4 +54,19 @@ public class SqlAuthDAOTests {
         assertThrows(DataAccessException.class, () -> authDAO.createAuth(badAuth));
     }
 
+    @Test
+    @DisplayName("Get Auth Good")
+    void getAuthPositive() throws DataAccessException {
+        authDAO.createAuth(testAuth);
+        var auth = authDAO.getAuth(testAuth.authToken());
+        assertEquals(auth.username(), testAuth.username());
+        assertEquals(auth.authToken(), testAuth.authToken());
+    }
+
+    @Test
+    @DisplayName("Get Auth not in db")
+    void getAuthNegative() throws DataAccessException {
+        assertNull(authDAO.getAuth(testAuth.authToken()));
+    }
+
 }
