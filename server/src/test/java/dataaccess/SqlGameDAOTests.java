@@ -124,10 +124,59 @@ public class SqlGameDAOTests {
 
     @Test
     @DisplayName("Update Game not in db")
-    void updateGameNegative() {
+    void updateGameNegative() throws SQLException, DataAccessException {
+        var id = gameDAO.createGame(testGame1);
+        //Updates nothing and doesn't throw (existing checks done by service)
         assertDoesNotThrow(() -> gameDAO.updateGame(new GameData(0,"white","black",null,null)));
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT whiteUsername, blackUsername FROM game WHERE gameID=?")) {
+                statement.setInt(1, id);
+                try (var res = statement.executeQuery()) {
+                    res.next();
+                    assertEquals(res.getString("whiteUsername"), testGame1.whiteUsername());
+                    assertEquals(res.getString("blackUsername"), testGame1.blackUsername());
+                }
+            }
+        }
     }
 
+    @Test
+    @DisplayName("List Games Good")
+    void listGamesPositive() throws DataAccessException {
+        gameDAO.createGame(testGame1);
+        gameDAO.createGame(testGame2);
+        var games = gameDAO.listGames();
+        assertEquals(2,games.size());
+    }
 
+    @Test
+    @DisplayName("List Games Empty")
+    void listGamesNegative() throws DataAccessException {
+        var games = gameDAO.listGames();
+        assertEquals(0,games.size());
+    }
 
+    @Test
+    @DisplayName("Clear Auth Good")
+    void clearPositive() throws DataAccessException, SQLException {
+        gameDAO.createGame(testGame1);
+        gameDAO.createGame(testGame2);
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT * FROM game")) {
+                try (var res = statement.executeQuery()) {
+                    assertTrue(res.next());
+                    assertTrue(res.next());
+                }
+            }
+        }
+
+        gameDAO.clear();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT * FROM auth")) {
+                try (var res = statement.executeQuery()) {
+                    assertFalse(res.next());
+                }
+            }
+        }
+    }
 }

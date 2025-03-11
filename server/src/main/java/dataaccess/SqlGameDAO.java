@@ -8,8 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 public class SqlGameDAO extends SqlDAO implements GameDAO{
@@ -122,7 +120,13 @@ public class SqlGameDAO extends SqlDAO implements GameDAO{
 
     @Override
     public void clear() throws DataAccessException {
-
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("TRUNCATE game")) {
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed clear: " + e.getMessage());
+        }
     }
 
     private GameData readGame(ResultSet res) throws SQLException {
