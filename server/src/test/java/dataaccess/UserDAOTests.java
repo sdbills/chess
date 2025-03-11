@@ -49,7 +49,7 @@ public class UserDAOTests {
     }
 
     @Test
-    @DisplayName("Create User Bad")
+    @DisplayName("Create User nulls")
     void createUserNegative() {
         UserData badUser = new UserData(null,null,null);
         assertThrows(DataAccessException.class, () -> userDAO.createUser(badUser));
@@ -69,6 +69,30 @@ public class UserDAOTests {
     @DisplayName("Get User not in db")
     void getUserNegative() throws DataAccessException {
         assertNull(userDAO.getUser(testUser.username()));
+    }
+
+    @Test
+    @DisplayName("Clear Works")
+    void clearPositive() throws DataAccessException, SQLException {
+        userDAO.createUser(testUser);
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT username, password, email FROM user WHERE username=?")) {
+                statement.setString(1, testUser.username());
+                try (var res = statement.executeQuery()) {
+                    assertTrue(res.next());
+                }
+            }
+        }
+
+        userDAO.clear();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT username, password, email FROM user WHERE username=?")) {
+                statement.setString(1, testUser.username());
+                try (var res = statement.executeQuery()) {
+                    assertFalse(res.next());
+                }
+            }
+        }
     }
 
 }

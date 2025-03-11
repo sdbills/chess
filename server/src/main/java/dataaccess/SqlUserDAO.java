@@ -55,7 +55,13 @@ public class SqlUserDAO extends SqlDAO implements UserDAO {
 
     @Override
     public void clear() throws DataAccessException {
-
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("TRUNCATE user")) {
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed clear: " + e.getMessage());
+        }
     }
 
 }
