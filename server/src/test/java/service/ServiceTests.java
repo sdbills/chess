@@ -5,6 +5,7 @@ import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,18 +15,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceTests {
 
-    UserDAO userDAO = new MemoryUserDAO();
-    GameDAO gameDAO = new MemoryGameDAO();
-    AuthDAO authDAO = new MemoryAuthDAO();
+    static UserDAO userDAO;
+    static GameDAO gameDAO;
+    static AuthDAO authDAO;
     UserService userService = new UserService(userDAO,authDAO);
     GameService gameService = new GameService(gameDAO,authDAO);
     UserData testUser = new UserData("User","Pass", "Mail");
     GameData testGame = new GameData(null,null,null,"testGame",null);
     AuthData testAuth = new AuthData("auth","User");
 
+    @BeforeAll
+    static void createDAOs() throws DataAccessException {
+        authDAO = new SqlAuthDAO();
+        userDAO = new SqlUserDAO();
+        gameDAO = new MemoryGameDAO();
+    }
 
     @BeforeEach
-    void setup() {
+    void setUp() {
         try {
             userDAO.clear();
             authDAO.clear();
