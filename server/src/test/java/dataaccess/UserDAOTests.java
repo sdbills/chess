@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
 
@@ -40,7 +41,7 @@ public class UserDAOTests {
                 var res = statement.executeQuery();
                 res.next();
                 assertEquals(res.getString("username"),testUser.username());
-                assertEquals(res.getString("password"),testUser.password());
+                assertTrue(BCrypt.checkpw(testUser.password(), res.getString("password")));
                 assertEquals(res.getString("email"),testUser.email());
             }
         }
