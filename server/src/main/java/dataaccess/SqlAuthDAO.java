@@ -1,6 +1,9 @@
 package dataaccess;
 
 import model.AuthData;
+import org.mindrot.jbcrypt.BCrypt;
+
+import java.sql.SQLException;
 
 public class SqlAuthDAO extends SqlDAO implements AuthDAO {
 
@@ -17,7 +20,15 @@ public class SqlAuthDAO extends SqlDAO implements AuthDAO {
 
     @Override
     public void createAuth(AuthData auth) throws DataAccessException {
-
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("INSERT INTO auth (authToken, username) VALUES (?, ?)")) {
+                statement.setString(1, auth.authToken());
+                statement.setString(2, auth.username());
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Invalid authentication: " + e.getMessage());
+        }
     }
 
     @Override
