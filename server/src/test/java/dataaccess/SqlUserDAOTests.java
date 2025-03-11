@@ -73,8 +73,7 @@ public class SqlUserDAOTests {
     void clearPositive() throws DataAccessException, SQLException {
         userDAO.createUser(testUser);
         try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("SELECT username, password, email FROM user WHERE username=?")) {
-                statement.setString(1, testUser.username());
+            try (var statement = conn.prepareStatement("SELECT * FROM user")) {
                 try (var res = statement.executeQuery()) {
                     assertTrue(res.next());
                 }
@@ -83,8 +82,7 @@ public class SqlUserDAOTests {
 
         userDAO.clear();
         try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("SELECT username, password, email FROM user WHERE username=?")) {
-                statement.setString(1, testUser.username());
+            try (var statement = conn.prepareStatement("SELECT * FROM user")) {
                 try (var res = statement.executeQuery()) {
                     assertFalse(res.next());
                 }

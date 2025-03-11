@@ -102,8 +102,7 @@ public class SqlAuthDAOTests {
         authDAO.createAuth(testAuth);
         authDAO.createAuth(new AuthData("token", testAuth.username()));
         try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("SELECT username FROM auth WHERE username=?")) {
-                statement.setString(1, testAuth.username());
+            try (var statement = conn.prepareStatement("SELECT * FROM auth")) {
                 try (var res = statement.executeQuery()) {
                     assertTrue(res.next());
                     assertTrue(res.next());
@@ -113,8 +112,7 @@ public class SqlAuthDAOTests {
 
         authDAO.clear();
         try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("SELECT username FROM auth WHERE username=?")) {
-                statement.setString(1, testAuth.username());
+            try (var statement = conn.prepareStatement("SELECT * FROM auth")) {
                 try (var res = statement.executeQuery()) {
                     assertFalse(res.next());
                 }
