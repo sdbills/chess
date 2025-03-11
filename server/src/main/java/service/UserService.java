@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.UUID;
 
@@ -31,7 +32,7 @@ public class UserService extends Service {
 
     public AuthData login(UserData req) throws DataAccessException, ServiceException {
         var user = userDAO.getUser(req.username());
-        if (user != null && user.password().equals(req.password())) {
+        if (user != null && BCrypt.checkpw(req.password(),user.password())) {
             return createAuth(req.username());
         } else {
             throw new ServiceException(401, "unauthorized");
