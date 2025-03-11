@@ -69,4 +69,62 @@ public class SqlAuthDAOTests {
         assertNull(authDAO.getAuth(testAuth.authToken()));
     }
 
+    @Test
+    @DisplayName("Delete Auth Good")
+    void deleteAuthPositive() throws DataAccessException, SQLException {
+        authDAO.createAuth(testAuth);
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT username FROM auth WHERE authToken=?")) {
+                statement.setString(1, testAuth.authToken());
+                try (var res = statement.executeQuery()) {
+                    assertTrue(res.next());
+                }
+            }
+        }
+
+        authDAO.deleteAuth(testAuth);
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT username FROM auth WHERE authToken=?")) {
+                statement.setString(1, testAuth.authToken());
+                try (var res = statement.executeQuery()) {
+                    assertFalse(res.next());
+                }
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("Delete Auth not in db")
+    void deleteAuthNegative() {
+        assertDoesNotThrow(() -> authDAO.deleteAuth(testAuth));
+    }
+
+    @Test
+    @DisplayName("Clear Auth Good")
+    void clearPositive() throws DataAccessException, SQLException {
+        authDAO.createAuth(testAuth);
+        authDAO.createAuth(new AuthData("token", testAuth.username()));
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT username FROM auth WHERE username=?")) {
+                statement.setString(1, testAuth.username());
+                try (var res = statement.executeQuery()) {
+                    assertTrue(res.next());
+                    assertTrue(res.next());
+                }
+            }
+        }
+
+        authDAO.clear();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT username FROM auth WHERE username=?")) {
+                statement.setString(1, testAuth.username());
+                try (var res = statement.executeQuery()) {
+                    assertFalse(res.next());
+                }
+            }
+        }
+    }
+
+
+
 }
