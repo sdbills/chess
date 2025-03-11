@@ -38,11 +38,12 @@ public class UserDAOTests {
         try (var conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement("SELECT username, password, email FROM user WHERE username=?")) {
                 statement.setString(1, testUser.username());
-                var res = statement.executeQuery();
-                res.next();
-                assertEquals(res.getString("username"),testUser.username());
-                assertTrue(BCrypt.checkpw(testUser.password(), res.getString("password")));
-                assertEquals(res.getString("email"),testUser.email());
+                try (var res = statement.executeQuery()) {
+                    res.next();
+                    assertEquals(res.getString("username"), testUser.username());
+                    assertTrue(BCrypt.checkpw(testUser.password(), res.getString("password")));
+                    assertEquals(res.getString("email"), testUser.email());
+                }
             }
         }
     }
@@ -54,5 +55,20 @@ public class UserDAOTests {
         assertThrows(DataAccessException.class, () -> userDAO.createUser(badUser));
     }
 
+    @Test
+    @DisplayName("Get User Good")
+    void getUserPositive() throws DataAccessException {
+        userDAO.createUser(testUser);
+        var user = userDAO.getUser(testUser.username());
+        assertEquals(user.username(), testUser.username());
+        assertTrue(BCrypt.checkpw(testUser.password(),user.password()));
+        assertEquals(user.email(), testUser.email());
+    }
+
+    @Test
+    @DisplayName("Get User not in db")
+    void getUserNegative() throws DataAccessException {
+        assertNull(userDAO.getUser(testUser.username()));
+    }
 
 }

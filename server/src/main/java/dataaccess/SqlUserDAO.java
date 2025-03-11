@@ -45,7 +45,6 @@ public class SqlUserDAO extends SqlDAO implements UserDAO {
                     if (!res.next()) {
                         return null;
                     }
-                    res.next();
                     return new UserData(username,res.getString("password"),res.getString("email"));
                 }
             }
@@ -56,6 +55,7 @@ public class SqlUserDAO extends SqlDAO implements UserDAO {
 
     @Override
     public void clear() throws DataAccessException {
+
     }
 
 }
