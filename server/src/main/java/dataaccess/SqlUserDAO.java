@@ -2,6 +2,8 @@ package dataaccess;
 
 import model.UserData;
 
+import java.sql.SQLException;
+
 public class SqlUserDAO extends SqlDAO implements UserDAO {
 
     public SqlUserDAO() throws DataAccessException {
@@ -18,7 +20,17 @@ public class SqlUserDAO extends SqlDAO implements UserDAO {
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("INSERT INTO user (username, password, email) VALUES (?, ?, ?)")) {
+                statement.setString(1, user.username());
+                statement.setString(2, user.password());
+                statement.setString(3, user.email());
+                statement.executeUpdate();
 
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Invalid user creation: " + e.getMessage());
+        }
     }
 
     @Override
