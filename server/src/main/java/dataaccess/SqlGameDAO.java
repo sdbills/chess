@@ -40,11 +40,11 @@ public class SqlGameDAO extends SqlDAO implements GameDAO{
                 statement.executeUpdate();
 
                 var resultSet = statement.getGeneratedKeys();
-                var ID = 0;
+                var id = 0;
                 if (resultSet.next()) {
-                    ID = resultSet.getInt(1);
+                    id = resultSet.getInt(1);
                 }
-                return ID;
+                return id;
             }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to add game: " + e.getMessage());
