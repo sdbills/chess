@@ -157,7 +157,7 @@ public class SqlGameDAOTests {
     }
 
     @Test
-    @DisplayName("Clear Auth Good")
+    @DisplayName("Clear Game Good")
     void clearPositive() throws DataAccessException, SQLException {
         gameDAO.createGame(testGame1);
         gameDAO.createGame(testGame2);
