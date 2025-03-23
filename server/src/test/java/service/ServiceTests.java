@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import request.JoinRequest;
+import exception.ResponseException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,28 +45,28 @@ public class ServiceTests {
 
     @Test
     @DisplayName("Register Good User")
-    void registerTestPositive() throws ServiceException, DataAccessException {
+    void registerTestPositive() throws ResponseException, DataAccessException {
         AuthData auth = userService.register(testUser);
         assertEquals(authDAO.getAuth(auth.authToken()),auth);
     }
 
     @Test
     @DisplayName("Register Taken User")
-    void registerTestNegativeTaken() throws ServiceException, DataAccessException {
+    void registerTestNegativeTaken() throws ResponseException, DataAccessException {
         userService.register(testUser);
-        assertThrows(ServiceException.class, () -> userService.register(testUser));
+        assertThrows(ResponseException.class, () -> userService.register(testUser));
     }
 
     @Test
     @DisplayName("Register Incomplete User")
     void registerTestNegativeInvalid() {
         var badUser = new UserData("user","pass",null);
-        assertThrows(ServiceException.class, () -> userService.register(badUser));
+        assertThrows(ResponseException.class, () -> userService.register(badUser));
     }
 
     @Test
     @DisplayName("Valid login")
-    void loginTestPositive() throws ServiceException, DataAccessException {
+    void loginTestPositive() throws ResponseException, DataAccessException {
         userDAO.createUser(testUser);
         var auth = userService.login(testUser);
         assertEquals(authDAO.getAuth(auth.authToken()),auth);
@@ -76,12 +77,12 @@ public class ServiceTests {
     void loginTestNegative() throws DataAccessException {
         userDAO.createUser(testUser);
         var invalidLog = new UserData(testUser.username(), "badPass",null);
-        assertThrows(ServiceException.class, () -> userService.login(invalidLog));
+        assertThrows(ResponseException.class, () -> userService.login(invalidLog));
     }
 
     @Test
     @DisplayName("Good logout")
-    void logoutTestPositive() throws ServiceException, DataAccessException {
+    void logoutTestPositive() throws ResponseException, DataAccessException {
         authDAO.createAuth(testAuth);
         userService.logout(testAuth.authToken());
         assertNull(authDAO.getAuth(testAuth.authToken()));
@@ -91,12 +92,12 @@ public class ServiceTests {
     @DisplayName("Unauthorized logout")
     void logoutTestNegative() throws DataAccessException {
         authDAO.createAuth(testAuth);
-        assertThrows(ServiceException.class, () -> userService.logout("invalid token"));
+        assertThrows(ResponseException.class, () -> userService.logout("invalid token"));
     }
 
     @Test
     @DisplayName("Good Creation")
-    void createTestPositive() throws ServiceException, DataAccessException {
+    void createTestPositive() throws ResponseException, DataAccessException {
         authDAO.createAuth(testAuth);
         var res = gameService.createGame(testGame,testAuth.authToken());
         assertNotNull(gameDAO.getGame(res.gameID()));
@@ -104,15 +105,15 @@ public class ServiceTests {
 
     @Test
     @DisplayName("Bad Creation Taken")
-    void createTestNegativeTaken() throws ServiceException, DataAccessException {
+    void createTestNegativeTaken() throws ResponseException, DataAccessException {
         authDAO.createAuth(testAuth);
         gameService.createGame(testGame,testAuth.authToken());
-        assertThrows(ServiceException.class, () -> gameService.createGame(testGame,testAuth.authToken()));
+        assertThrows(ResponseException.class, () -> gameService.createGame(testGame,testAuth.authToken()));
     }
 
     @Test
     @DisplayName("Good List Games")
-    void listTestPositive() throws ServiceException, DataAccessException {
+    void listTestPositive() throws ResponseException, DataAccessException {
         authDAO.createAuth(testAuth);
         gameDAO.createGame(testGame);
         gameDAO.createGame(new GameData(2,null,null,"null",null));
@@ -123,12 +124,12 @@ public class ServiceTests {
     @Test
     @DisplayName("Unauthorized List Games")
     void listTestNegative() {
-        assertThrows(ServiceException.class, () -> gameService.createGame(testGame,testAuth.authToken()));
+        assertThrows(ResponseException.class, () -> gameService.createGame(testGame,testAuth.authToken()));
     }
 
     @Test
     @DisplayName("Good Join Game")
-    void joinTestPositive() throws ServiceException, DataAccessException {
+    void joinTestPositive() throws ResponseException, DataAccessException {
         authDAO.createAuth(testAuth);
         var id = gameDAO.createGame(testGame);
         gameService.joinGame(new JoinRequest(ChessGame.TeamColor.WHITE,id),testAuth.authToken());
@@ -140,12 +141,12 @@ public class ServiceTests {
 
     @Test
     @DisplayName("Bad Join Taken")
-    void joinTestNegativeTaken() throws ServiceException, DataAccessException {
+    void joinTestNegativeTaken() throws ResponseException, DataAccessException {
         authDAO.createAuth(testAuth);
         var id = gameDAO.createGame(testGame);
         var req = new JoinRequest(ChessGame.TeamColor.WHITE,id);
         gameService.joinGame(req,testAuth.authToken());
-        assertThrows(ServiceException.class, () -> gameService.joinGame(req,testAuth.authToken()));
+        assertThrows(ResponseException.class, () -> gameService.joinGame(req,testAuth.authToken()));
     }
 
     @Test
@@ -154,12 +155,12 @@ public class ServiceTests {
         authDAO.createAuth(testAuth);
         gameDAO.createGame(testGame);
         var req = new JoinRequest(ChessGame.TeamColor.WHITE,123);
-        assertThrows(ServiceException.class, () -> gameService.joinGame(req,testAuth.authToken()));
+        assertThrows(ResponseException.class, () -> gameService.joinGame(req,testAuth.authToken()));
     }
 
     @Test
     @DisplayName("Good Authorization")
-    void authenticateTestPositive() throws ServiceException, DataAccessException {
+    void authenticateTestPositive() throws ResponseException, DataAccessException {
         authDAO.createAuth(testAuth);
         var auth = userService.authenticate(testAuth.authToken());
         assertEquals(authDAO.getAuth(auth.authToken()),auth);
@@ -168,7 +169,7 @@ public class ServiceTests {
     @Test
     @DisplayName("Bad Authorization")
     void authenticateTestNegative() {
-        assertThrows(ServiceException.class, () -> userService.authenticate("123312"));
+        assertThrows(ResponseException.class, () -> userService.authenticate("123312"));
     }
 
 

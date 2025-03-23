@@ -3,6 +3,7 @@ package service;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import model.AuthData;
+import exception.ResponseException;
 
 public class Service {
     protected AuthDAO authDAO;
@@ -15,12 +16,12 @@ public class Service {
         authDAO.clear();
     }
 
-    public AuthData authenticate(String authToken) throws DataAccessException, ServiceException {
+    public AuthData authenticate(String authToken) throws DataAccessException, ResponseException {
         var auth = authDAO.getAuth(authToken);
         if (auth != null) {
             return auth;
         } else {
-            throw new ServiceException(401, "unauthorized");
+            throw new ResponseException(401, "unauthorized");
         }
     }
 }
