@@ -51,4 +51,22 @@ public class ServerFacadeTests {
         assertThrows(ResponseException.class, () -> facade.register(testUser));
     }
 
+    @Test
+    @DisplayName("Login Positive")
+    public void loginPositive() throws ResponseException {
+        facade.register(testUser);
+        facade.authToken = null;
+        var auth = facade.login(new UserData(testUser.username(), testUser.password(), null));
+        assertEquals(auth.username(), testUser.username());
+        assertEquals(auth.authToken(), facade.authToken);
+        assertNotNull(facade.authToken);
+    }
+
+    @Test
+    @DisplayName("Login Negative Not Exist")
+    public void loginNegative() throws ResponseException {
+        assertThrows(ResponseException.class, () -> facade.login(testUser));
+    }
+
+
 }
