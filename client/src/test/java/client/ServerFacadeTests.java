@@ -2,8 +2,10 @@ package client;
 
 import dataaccess.DataAccessException;
 import exception.ResponseException;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
+import request.CreateRequest;
 import server.Server;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,6 +15,7 @@ public class ServerFacadeTests {
     private static Server server;
     static ServerFacade facade;
     UserData testUser = new UserData("user", "pass", "email");
+
 
     @BeforeAll
     public static void init() {
@@ -64,9 +67,39 @@ public class ServerFacadeTests {
 
     @Test
     @DisplayName("Login Negative Not Exist")
-    public void loginNegative() throws ResponseException {
+    public void logoutNegative() {
         assertThrows(ResponseException.class, () -> facade.login(testUser));
     }
 
+    @Test
+    @DisplayName("Logout Positive")
+    public void logoutPositive() throws ResponseException {
+        facade.register(testUser);
+        facade.logout();
+        assertNull(facade.authToken);
+    }
+
+    @Test
+    @DisplayName("Logout Negative")
+    public void loginNegative() {
+        assertThrows(ResponseException.class, () -> facade.logout());
+    }
+
+    @Test
+    @DisplayName("Create Positive")
+    public void createGamePositive() throws ResponseException {
+        facade.register(testUser);
+        var res = facade.create(new CreateRequest("gName"));
+        assertTrue(res.gameID() > 0);
+    }
+
+    @Test
+    @DisplayName("Create Negative Invalid Names")
+    public void createGameNegative() throws ResponseException {
+        facade.register(testUser);
+        assertThrows(ResponseException.class, () -> facade.create(new CreateRequest(null)));
+        facade.create(new CreateRequest("gName"));
+        assertThrows(ResponseException.class, () -> facade.create(new CreateRequest("gName")));
+    }
 
 }
