@@ -5,6 +5,7 @@ import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import request.CreateRequest;
 import request.JoinRequest;
 import response.ListResponse;
 
@@ -42,7 +43,7 @@ public class ServerFacade {
         makeRequest("DELETE", path, null, null);
    }
 
-   public GameData create(GameData req) throws ResponseException {
+   public GameData create(CreateRequest req) throws ResponseException {
         var path = "/game";
         return makeRequest("POST", path, req, GameData.class);
    }

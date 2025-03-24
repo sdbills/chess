@@ -5,6 +5,7 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import model.GameData;
+import request.CreateRequest;
 import request.JoinRequest;
 import response.CreateResponse;
 import response.ListResponse;
@@ -25,7 +26,7 @@ public class GameService extends Service {
         gameDAO.clear();
     }
 
-    public CreateResponse createGame(GameData req, String authToken) throws DataAccessException, ResponseException {
+    public CreateResponse createGame(CreateRequest req, String authToken) throws DataAccessException, ResponseException {
         authenticate(authToken);
 
         if (gameDAO.getGame(req.gameName()) == null) {

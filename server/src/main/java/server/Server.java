@@ -5,6 +5,7 @@ import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import request.CreateRequest;
 import request.JoinRequest;
 import service.GameService;
 import exception.ResponseException;
@@ -86,7 +87,7 @@ public class Server {
 
     private Object createGameHandler(Request req, Response res) throws DataAccessException, ResponseException {
         String authToken = req.headers("authorization");
-        var gameReq = new Gson().fromJson(req.body(), GameData.class);
+        var gameReq = new Gson().fromJson(req.body(), CreateRequest.class);
         var gameRes = gameService.createGame(gameReq, authToken);
         return new Gson().toJson(gameRes);
     }
