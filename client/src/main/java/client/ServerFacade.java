@@ -7,6 +7,7 @@ import model.GameData;
 import model.UserData;
 import request.CreateRequest;
 import request.JoinRequest;
+import response.CreateResponse;
 import response.ListResponse;
 
 import java.io.IOException;
@@ -24,16 +25,16 @@ public class ServerFacade {
         serverURL = "http://localhost:"+port;
     }
 
-   public AuthData register(UserData request) throws ResponseException {
+   public AuthData register(UserData req) throws ResponseException {
         var path = "/user";
-        var res = makeRequest("POST", path, request, AuthData.class);
+        var res = makeRequest("POST", path, req, AuthData.class);
         authToken = res.authToken();
         return res;
    }
 
-   public AuthData login(UserData request) throws ResponseException {
+   public AuthData login(UserData req) throws ResponseException {
         var path = "/session";
-        var res = makeRequest("POST", path, request, AuthData.class);
+        var res = makeRequest("POST", path, req, AuthData.class);
         authToken = res.authToken();
         return res;
    }
@@ -41,11 +42,12 @@ public class ServerFacade {
    public void logout() throws ResponseException {
         var path = "/session";
         makeRequest("DELETE", path, null, null);
+        authToken = null;
    }
 
-   public GameData create(CreateRequest req) throws ResponseException {
+   public CreateResponse create(CreateRequest req) throws ResponseException {
         var path = "/game";
-        return makeRequest("POST", path, req, GameData.class);
+        return makeRequest("POST", path, req, CreateResponse.class);
    }
 
    public ListResponse listGames() throws ResponseException {
