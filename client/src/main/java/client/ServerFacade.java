@@ -19,8 +19,8 @@ public class ServerFacade {
     private final String serverURL;
     String authToken;
 
-    public ServerFacade(String url) {
-        serverURL = url;
+    public ServerFacade(int port) {
+        serverURL = "http://localhost:"+port;
     }
 
    public AuthData register(UserData request) throws ResponseException {
