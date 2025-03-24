@@ -2,7 +2,6 @@ package client;
 
 import dataaccess.DataAccessException;
 import exception.ResponseException;
-import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import request.CreateRequest;
@@ -102,4 +101,19 @@ public class ServerFacadeTests {
         assertThrows(ResponseException.class, () -> facade.create(new CreateRequest("gName")));
     }
 
+    @Test
+    @DisplayName("List Games Positive")
+    public void listGamesPositive() throws ResponseException {
+        facade.register(testUser);
+        facade.create(new CreateRequest("game1"));
+        facade.create(new CreateRequest("game2"));
+        var games = facade.listGames();
+        assertEquals(2, games.games().size());
+    }
+
+    @Test
+    @DisplayName("List Games Negative Unauthorized")
+    public void listGamesNegative() {
+        assertThrows(ResponseException.class, () -> facade.listGames());
+    }
 }
