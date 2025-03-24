@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import request.CreateRequest;
 import request.JoinRequest;
 import exception.ResponseException;
 
@@ -24,6 +25,7 @@ public class ServiceTests {
     UserData testUser = new UserData("User","Pass", "Mail");
     GameData testGame = new GameData(null,null,null,"testGame",null);
     AuthData testAuth = new AuthData("auth","User");
+    CreateRequest testCreate = new CreateRequest(testGame.gameName());
 
     @BeforeAll
     static void createDAOs() throws DataAccessException {
@@ -99,7 +101,7 @@ public class ServiceTests {
     @DisplayName("Good Creation")
     void createTestPositive() throws ResponseException, DataAccessException {
         authDAO.createAuth(testAuth);
-        var res = gameService.createGame(testGame,testAuth.authToken());
+        var res = gameService.createGame(testCreate,testAuth.authToken());
         assertNotNull(gameDAO.getGame(res.gameID()));
     }
 
@@ -107,8 +109,8 @@ public class ServiceTests {
     @DisplayName("Bad Creation Taken")
     void createTestNegativeTaken() throws ResponseException, DataAccessException {
         authDAO.createAuth(testAuth);
-        gameService.createGame(testGame,testAuth.authToken());
-        assertThrows(ResponseException.class, () -> gameService.createGame(testGame,testAuth.authToken()));
+        gameService.createGame(testCreate,testAuth.authToken());
+        assertThrows(ResponseException.class, () -> gameService.createGame(testCreate,testAuth.authToken()));
     }
 
     @Test
@@ -124,7 +126,7 @@ public class ServiceTests {
     @Test
     @DisplayName("Unauthorized List Games")
     void listTestNegative() {
-        assertThrows(ResponseException.class, () -> gameService.createGame(testGame,testAuth.authToken()));
+        assertThrows(ResponseException.class, () -> gameService.createGame(testCreate,testAuth.authToken()));
     }
 
     @Test
