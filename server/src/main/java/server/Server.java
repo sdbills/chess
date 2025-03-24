@@ -36,7 +36,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
 
-        Spark.delete("/db", this::clear);
+        Spark.delete("/db", this::clearHandler);
         Spark.post("/user", this::registerHandler);
         Spark.post("/session", this::loginHandler);
         Spark.delete("/session", this::logoutHandler);
@@ -55,7 +55,12 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private Object clear(Request req, Response res) throws DataAccessException {
+    public void clear() throws DataAccessException {
+        userService.clear();
+        gameService.clear();
+    }
+
+    private Object clearHandler(Request req, Response res) throws DataAccessException {
         userService.clear();
         gameService.clear();
         return "{}";
