@@ -1,11 +1,15 @@
 package client;
 
+import chess.ChessGame;
 import dataaccess.DataAccessException;
 import exception.ResponseException;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import request.CreateRequest;
+import request.JoinRequest;
 import server.Server;
+
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -115,5 +119,28 @@ public class ServerFacadeTests {
     @DisplayName("List Games Negative Unauthorized")
     public void listGamesNegative() {
         assertThrows(ResponseException.class, () -> facade.listGames());
+    }
+
+    @Test
+    @DisplayName("Join Game Positive")
+    public void joinPositive() throws ResponseException {
+        facade.register(testUser);
+        var id = facade.create(new CreateRequest("gName")).gameID();
+        assertNull(facade.listGames().games().getFirst().whiteUsername());
+        assertNull(facade.listGames().games().getFirst().blackUsername());
+        facade.join(new JoinRequest(ChessGame.TeamColor.WHITE, id));
+        assertEquals(facade.listGames().games().getFirst().whiteUsername(),testUser.username());
+        facade.join(new JoinRequest(ChessGame.TeamColor.BLACK, id));
+        assertEquals(facade.listGames().games().getFirst().blackUsername(),testUser.username());
+    }
+
+    @Test
+    @DisplayName("Join Game Negative Taken")
+    public void joinNegative() throws ResponseException {
+        facade.register(testUser);
+        var id = facade.create(new CreateRequest("gName")).gameID();
+        facade.join(new JoinRequest(ChessGame.TeamColor.WHITE, id));
+        assertThrows(ResponseException.class,
+                () -> facade.join(new JoinRequest(ChessGame.TeamColor.WHITE, id)));
     }
 }
