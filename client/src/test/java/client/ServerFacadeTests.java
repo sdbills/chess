@@ -9,8 +9,6 @@ import request.CreateRequest;
 import request.JoinRequest;
 import server.Server;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServerFacadeTests {

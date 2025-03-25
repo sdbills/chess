@@ -3,7 +3,6 @@ package client;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.AuthData;
-import model.GameData;
 import model.UserData;
 import request.CreateRequest;
 import request.JoinRequest;
