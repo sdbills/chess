@@ -58,7 +58,7 @@ public class Repl {
     }
 
     public void setGame(int id, ChessGame.TeamColor color) {
-        currClient = new GameClient(server, id, color, this);
+        new GameClient(server, id, color, this);
     }
 
 

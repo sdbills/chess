@@ -115,7 +115,7 @@ public class PostLoginClient implements Client{
 
             server.join(new JoinRequest(color, id));
             repl.setGame(id, color);
-            return "JOINED AS " + color.toString();
+            return "JOINED AS " + color;
         }
         return "invalid number of parameters, enter 'help' for valid parameters";
     }
