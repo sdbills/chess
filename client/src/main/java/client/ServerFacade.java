@@ -99,11 +99,12 @@ public class ServerFacade {
     private void failureCaseThrow(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
         if (!(status/100 == 2)) {
-            try (InputStream err = http.getErrorStream()) {
-                if (err != null) {
-                    throw new ResponseException(status, err.toString());
-                }
-            }
+            throw new ResponseException(status, http.getResponseMessage());
+//            try (InputStream err = http.getErrorStream()) {
+//                if (err != null) {
+//                    throw new ResponseException(status, err.);
+//                }
+//            }
         }
     }
 }
