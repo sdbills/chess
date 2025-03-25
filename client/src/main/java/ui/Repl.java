@@ -31,10 +31,15 @@ public class Repl {
             result = currClient.eval(input);
             System.out.println(result);
 
+
             if (Objects.equals(result, "REGISTERED") || Objects.equals(result, "LOGGED IN")) {
                 currClient = new PostLoginClient(server);
             } else if (Objects.equals(result, "LOGGED OUT")) {
                 currClient = preClient;
+            } else if (Objects.equals(result, "JOINED AS WHITE") || Objects.equals(result, "VIEWING")) {
+                currClient = new GameClient(server, true);
+             }else if (Objects.equals(result, "JOINED AS BLACK")) {
+                currClient = new GameClient(server, false);
             }
         }
     }

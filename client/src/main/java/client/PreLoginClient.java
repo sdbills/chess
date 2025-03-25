@@ -44,7 +44,7 @@ public class PreLoginClient implements Client {
             server.login(userRequest);
             return "LOGGED IN";
         }
-        return "invalid number of parameters, enter 'help' for valid command";
+        return "invalid number of parameters, enter 'help' for valid parameters";
     }
 
     private String register(String[] params) throws ResponseException {
@@ -53,6 +53,6 @@ public class PreLoginClient implements Client {
             server.register(userRequest);
             return "REGISTERED";
         }
-        return "invalid number of parameters, enter 'help' for valid command";
+        return "invalid number of parameters, enter 'help' for valid parameters";
     }
 }

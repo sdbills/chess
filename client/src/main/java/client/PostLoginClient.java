@@ -1,15 +1,26 @@
 package client;
 
+import chess.ChessGame;
 import exception.ResponseException;
+import model.GameData;
 import request.CreateRequest;
+import request.JoinRequest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class PostLoginClient implements Client{
     private final ServerFacade server;
+    ArrayList<GameData> games;
 
     public PostLoginClient(ServerFacade server) {
         this.server = server;
+        try {
+            updateGames();
+        } catch (ResponseException e) {
+            System.out.println("FAILED INITIALIZATION, RESTART");
+        }
     }
 
     @Override
@@ -45,21 +56,80 @@ public class PostLoginClient implements Client{
     private String create(String[] params) throws ResponseException {
         if (params.length == 1) {
             server.create(new CreateRequest(params[0]));
-            return "CREATED";
+            return "CREATED " + params[0];
         }
-        return "invalid number of parameters, enter 'help' for valid command";
+        return "invalid number of parameters, enter 'help' for valid parameters";
     }
 
-    private String list() {
-        return "LISTED";
+    private String list() throws ResponseException {
+        updateGames();
+        return gamesString();
     }
 
-    private String join(String[] params) {
-        return "JOINED";
+    private void updateGames() throws ResponseException {
+        games = server.listGames().games();
+    }
+
+    private String gamesString() {
+        if (games.isEmpty()) {
+            return "No Games Created Yet";
+        }
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < games.size(); i++) {
+            out.append(i+1);
+            out.append(". Game Name: ");
+
+            var game = games.get(i);
+            out.append(game.gameName());
+
+            var whiteUser = game.whiteUsername() == null ? "none" : game.whiteUsername();
+            var blackUser = game.blackUsername() == null ? "none" : game.blackUsername();
+            out.append("    White: ").append(whiteUser).append("   Black: ").append(blackUser);
+            out.append("\n");
+        }
+        return out.toString();
+    }
+
+    private String join(String[] params) throws ResponseException {
+        if (params.length == 2) {
+            ChessGame.TeamColor color;
+            if (Objects.equals(params[1], "white") || Objects.equals(params[1], "w")) {
+                color = ChessGame.TeamColor.WHITE;
+            } else if (Objects.equals(params[1], "black") || Objects.equals(params[1], "b")) {
+                color = ChessGame.TeamColor.BLACK;
+            } else {
+                return "invalid color parameter, enter 'help' for valid parameters";
+            }
+
+            int id;
+            try {
+                id = games.get(Integer.parseInt(params[0])-1).gameID();
+            } catch (NumberFormatException e) {
+                return "invalid id parameter, must be a number";
+            } catch (IndexOutOfBoundsException e) {
+                return "invalid id parameter, must be number corresponding to games list";
+            }
+
+            server.join(new JoinRequest(color, id));
+            return "JOINED AS " + color.toString();
+        }
+        return "invalid number of parameters, enter 'help' for valid parameters";
     }
 
     private String observe(String[] params) {
-        return "OBSERVED";
+        if (params.length == 1) {
+            int id;
+            try {
+                id = games.get(Integer.parseInt(params[0])-1).gameID();
+            } catch (NumberFormatException e) {
+                return "invalid id parameter, must be a number";
+            } catch (IndexOutOfBoundsException e) {
+                return "invalid id parameter, must be number corresponding to games list";
+            }
+
+            return "VIEWING";
+        }
+        return "invalid number of parameters, enter 'help' for valid parameters";
     }
 
     private String logout() throws ResponseException {
