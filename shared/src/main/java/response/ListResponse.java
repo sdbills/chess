@@ -2,7 +2,7 @@ package response;
 
 import model.GameData;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
-public record ListResponse(Collection<GameData> games) {
+public record ListResponse(ArrayList<GameData> games) {
 }
