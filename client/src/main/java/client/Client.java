@@ -1,5 +1,5 @@
 package client;
 
 public interface Client {
-    public String eval(String input);
+    String eval(String input);
 }

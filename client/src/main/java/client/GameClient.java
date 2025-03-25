@@ -10,7 +10,7 @@ public class GameClient implements Client {
     private final int gameID;
     private final ChessGame.TeamColor color;
     private final Repl repl;
-    private ChessGame game = new ChessGame();
+    private final ChessGame game = new ChessGame();
 
     public GameClient(ServerFacade server, int gameID, ChessGame.TeamColor color, Repl repl) {
         this.server = server;
@@ -68,7 +68,7 @@ public class GameClient implements Client {
             var pos = new ChessPosition(row, col);
             var piece = game.getBoard().getPiece(pos);
 
-            out.append(tileColor(row,col, reverse));
+            out.append(tileColor(row,col));
             if (piece != null) {
                 switch (piece.getTeamColor()) {
                     case WHITE -> out.append(SET_TEXT_COLOR_WHITE);
@@ -102,7 +102,7 @@ public class GameClient implements Client {
         out.append(SET_TEXT_COLOR_BLACK);
     }
 
-    private String tileColor(int row, int col, boolean reverse) {
+    private String tileColor(int row, int col) {
         int tot = row+col;
         if (Math.ceilMod(tot,2) == 0) {
             return SET_BG_COLOR_RED;
