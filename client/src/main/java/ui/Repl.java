@@ -13,8 +13,8 @@ public class Repl {
     private PostLoginClient postClient;
     private Client currClient;
 
-    public Repl(int port) {
-        server = new ServerFacade(port);
+    public Repl(String serverURL) {
+        server = new ServerFacade(serverURL);
         preClient = new PreLoginClient(server, this);
         currClient = preClient;
     }
@@ -73,8 +73,4 @@ public class Repl {
         }
         System.out.print(client + ">>>");
     }
-
-
-
-
 }

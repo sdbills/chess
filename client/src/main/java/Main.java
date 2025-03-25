@@ -6,11 +6,11 @@ public class Main {
 //        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
 //        System.out.println("♕ 240 Chess Client: " + piece);
 
-        var port = 8080;
+        var serverUrl = "http://localhost:8080";
         if (args.length == 1) {
-            port = Integer.parseInt(args[0]);
+            serverUrl = args[0];
         }
 
-        new Repl(port).run();
+        new Repl(serverUrl).run();
     }
 }
