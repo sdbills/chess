@@ -66,10 +66,12 @@ public class ServerFacade {
 
             writeRequest(request, http);
             http.connect();
-//            var status = http.getResponseCode();
+            failureCaseThrow(http);
             return readBody(http, responseClass);
-        } catch (Exception ex) {
-            throw new ResponseException(500, ex.getMessage());
+        } catch (ResponseException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ResponseException(500, e.getMessage());
         }
     }
 
@@ -90,6 +92,17 @@ public class ServerFacade {
             String req = new Gson().toJson(request);
             try (OutputStream body = http.getOutputStream()) {
                 body.write(req.getBytes());
+            }
+        }
+    }
+
+    private void failureCaseThrow(HttpURLConnection http) throws IOException, ResponseException {
+        var status = http.getResponseCode();
+        if (!(status/100 == 2)) {
+            try (InputStream err = http.getErrorStream()) {
+                if (err != null) {
+                    throw new ResponseException(status, err.toString());
+                }
             }
         }
     }
