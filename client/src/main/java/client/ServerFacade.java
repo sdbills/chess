@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.*;
+import java.util.Objects;
 
 public class ServerFacade {
 
@@ -99,12 +100,11 @@ public class ServerFacade {
     private void failureCaseThrow(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
         if (!(status/100 == 2)) {
-            throw new ResponseException(status, http.getResponseMessage());
-//            try (InputStream err = http.getErrorStream()) {
-//                if (err != null) {
-//                    throw new ResponseException(status, err.);
-//                }
-//            }
+            var message = http.getResponseMessage();
+            if (Objects.equals(message, "Forbidden") || Objects.equals(message, "Bad Request")) {
+                message = "Already Taken";
+            }
+            throw new ResponseException(status, message);
         }
     }
 }
