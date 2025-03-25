@@ -35,8 +35,7 @@ public class PreLoginClient implements Client {
                 register <USERNAME> <PASSWORD> <EMAIL> - to create an account
                 login <USERNAME> <PASSWORD> - to sign in
                 quit - to exit the program
-                help - to get helpful information
-                """;
+                help - to get helpful information""";
     }
 
     private String login(String[] params) throws ResponseException {

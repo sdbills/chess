@@ -1,9 +1,6 @@
 package ui;
 
-import client.Client;
-import client.PostLoginClient;
-import client.PreLoginClient;
-import client.ServerFacade;
+import client.*;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -27,17 +24,32 @@ public class Repl {
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
-            System.out.print(">>> ");
+            prompt();
+
             String input = scanner.nextLine();
 
             result = currClient.eval(input);
             System.out.println(result);
+
             if (Objects.equals(result, "REGISTERED") || Objects.equals(result, "LOGGED IN")) {
                 currClient = new PostLoginClient(server);
+            } else if (Objects.equals(result, "LOGGED OUT")) {
+                currClient = preClient;
             }
         }
     }
 
+    private void prompt() {
+        String client = "";
+        if (currClient.getClass() == PreLoginClient.class) {
+            client = "[LOGGED OUT]";
+        } else if (currClient.getClass() == PostLoginClient.class) {
+            client = "[LOGGED IN]";
+        } else if (currClient.getClass() == GameClient.class) {
+            client = "[GAME]";
+        }
+        System.out.print(client + ">>>");
+    }
 
 
 }
