@@ -26,38 +26,32 @@ public class ServerFacade {
     }
 
    public AuthData register(UserData req) throws ResponseException {
-        var path = "/user";
-        var res = makeRequest("POST", path, req, AuthData.class);
+        var res = makeRequest("POST", "/user", req, AuthData.class);
         authToken = res.authToken();
         return res;
    }
 
    public AuthData login(UserData req) throws ResponseException {
-        var path = "/session";
-        var res = makeRequest("POST", path, req, AuthData.class);
+        var res = makeRequest("POST", "/session", req, AuthData.class);
         authToken = res.authToken();
         return res;
    }
 
    public void logout() throws ResponseException {
-        var path = "/session";
-        makeRequest("DELETE", path, null, null);
+        makeRequest("DELETE", "/session", null, null);
         authToken = null;
    }
 
    public CreateResponse create(CreateRequest req) throws ResponseException {
-        var path = "/game";
-        return makeRequest("POST", path, req, CreateResponse.class);
+        return makeRequest("POST", "/game", req, CreateResponse.class);
    }
 
    public ListResponse listGames() throws ResponseException {
-        var path = "/game";
-        return makeRequest("GET", path, null, ListResponse.class);
+        return makeRequest("GET", "/game", null, ListResponse.class);
    }
 
    public void join(JoinRequest req) throws ResponseException {
-        var path = "/game";
-        makeRequest("PUT", path, req, null);
+        makeRequest("PUT", "/game", req, null);
    }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
@@ -82,14 +76,12 @@ public class ServerFacade {
 
     private <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
         T response = null;
-        if (http.getContentLength() < 0) {
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
                 if (responseClass != null) {
                     response = new Gson().fromJson(reader, responseClass);
                 }
             }
-        }
         return response;
     }
 
