@@ -40,7 +40,12 @@ public class PreLoginClient implements Client {
     }
 
     private String login(String[] params) throws ResponseException {
-            return "logged in";
+        if (params.length == 2) {
+            UserData userRequest = new UserData(params[0], params[1], null);
+            server.login(userRequest);
+            return "LOGGED IN";
+        }
+        return "invalid number of parameters, enter 'help' for valid command";
     }
 
     private String register(String[] params) throws ResponseException {
