@@ -1,8 +1,8 @@
 package ui;
 
+import chess.ChessGame;
 import client.*;
 
-import java.util.Objects;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
@@ -10,11 +10,12 @@ import static ui.EscapeSequences.*;
 public class Repl {
     private final PreLoginClient preClient;
     private final ServerFacade server;
+    private PostLoginClient postClient;
     private Client currClient;
 
     public Repl(int port) {
         server = new ServerFacade(port);
-        preClient = new PreLoginClient(server);
+        preClient = new PreLoginClient(server, this);
         currClient = preClient;
     }
 
@@ -32,17 +33,34 @@ public class Repl {
             System.out.println(result);
 
 
-            if (Objects.equals(result, "REGISTERED") || Objects.equals(result, "LOGGED IN")) {
-                currClient = new PostLoginClient(server);
-            } else if (Objects.equals(result, "LOGGED OUT")) {
-                currClient = preClient;
-            } else if (Objects.equals(result, "JOINED AS WHITE") || Objects.equals(result, "VIEWING")) {
-                currClient = new GameClient(server, true);
-             }else if (Objects.equals(result, "JOINED AS BLACK")) {
-                currClient = new GameClient(server, false);
-            }
+//            if (Objects.equals(result, "REGISTERED") || Objects.equals(result, "LOGGED IN")) {
+//                currClient = new PostLoginClient(server, repl);
+//            } else if (Objects.equals(result, "LOGGED OUT")) {
+//                currClient = preClient;
+//            } else if (Objects.equals(result, "JOINED AS WHITE") || Objects.equals(result, "VIEWING")) {
+//                currClient = new GameClient(server, true);
+//             }else if (Objects.equals(result, "JOINED AS BLACK")) {
+//                new GameClient(server, false);
+////                currClient = new GameClient(server, false);
+//            }
         }
     }
+
+    public void setPost() {
+        if (postClient == null) {
+            postClient = new PostLoginClient(server, this);
+        }
+        currClient = postClient;
+    }
+
+    public void setPre() {
+        currClient = preClient;
+    }
+
+    public void setGame(int id, ChessGame.TeamColor color) {
+        currClient = new GameClient(server, id, color, this);
+    }
+
 
     private void prompt() {
         String client = "";
@@ -55,6 +73,8 @@ public class Repl {
         }
         System.out.print(client + ">>>");
     }
+
+
 
 
 }

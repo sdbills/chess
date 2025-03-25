@@ -2,14 +2,17 @@ package client;
 
 import exception.ResponseException;
 import model.UserData;
+import ui.Repl;
 
 import java.util.Arrays;
 
 public class PreLoginClient implements Client {
     private final ServerFacade server;
+    private final Repl repl;
 
-    public PreLoginClient(ServerFacade server) {
+    public PreLoginClient(ServerFacade server, Repl repl) {
         this.server = server;
+        this.repl = repl;
     }
 
     @Override
@@ -42,6 +45,7 @@ public class PreLoginClient implements Client {
         if (params.length == 2) {
             UserData userRequest = new UserData(params[0], params[1], null);
             server.login(userRequest);
+            repl.setPost();
             return "LOGGED IN";
         }
         return "invalid number of parameters, enter 'help' for valid parameters";
@@ -51,6 +55,7 @@ public class PreLoginClient implements Client {
         if (params.length == 3) {
             UserData userRequest = new UserData(params[0], params[1], params[2]);
             server.register(userRequest);
+            repl.setPost();
             return "REGISTERED";
         }
         return "invalid number of parameters, enter 'help' for valid parameters";

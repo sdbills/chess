@@ -5,6 +5,7 @@ import exception.ResponseException;
 import model.GameData;
 import request.CreateRequest;
 import request.JoinRequest;
+import ui.Repl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,10 +13,12 @@ import java.util.Objects;
 
 public class PostLoginClient implements Client{
     private final ServerFacade server;
+    private final Repl repl;
     ArrayList<GameData> games;
 
-    public PostLoginClient(ServerFacade server) {
+    public PostLoginClient(ServerFacade server, Repl repl) {
         this.server = server;
+        this.repl = repl;
         try {
             updateGames();
         } catch (ResponseException e) {
@@ -111,6 +114,7 @@ public class PostLoginClient implements Client{
             }
 
             server.join(new JoinRequest(color, id));
+            repl.setGame(id, color);
             return "JOINED AS " + color.toString();
         }
         return "invalid number of parameters, enter 'help' for valid parameters";
@@ -126,14 +130,15 @@ public class PostLoginClient implements Client{
             } catch (IndexOutOfBoundsException e) {
                 return "invalid id parameter, must be number corresponding to games list";
             }
-
-            return "VIEWING";
+            repl.setGame(id, ChessGame.TeamColor.WHITE);
+            return "VIEWING GAME " + id;
         }
         return "invalid number of parameters, enter 'help' for valid parameters";
     }
 
     private String logout() throws ResponseException {
        server.logout();
+       repl.setPre();
        return "LOGGED OUT";
     }
 }
