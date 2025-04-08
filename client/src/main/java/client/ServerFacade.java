@@ -13,6 +13,7 @@ public class ServerFacade {
     private final String serverURL;
     String authToken;
     HttpCommunicator http;
+    WebSocketCommunicator ws;
 
     public ServerFacade(String serverURL) {
         this.serverURL = serverURL;
@@ -46,5 +47,9 @@ public class ServerFacade {
 
    public void join(JoinRequest req) throws ResponseException {
         http.join(req);
+   }
+
+   public void connect() {
+        ws = new WebSocketCommunicator(serverURL);
    }
 }
