@@ -139,7 +139,7 @@ public class PostLoginClient implements Client{
             } catch (ResponseException e) {
                 return "failed to connect to server";
             }
-            return "VIEWING GAME " + id;
+            return "OBSERVING GAME " + id;
         }
         return "invalid number of parameters, enter 'help' for valid parameters";
     }

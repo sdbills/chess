@@ -1,5 +1,6 @@
 package client;
 
+import com.google.gson.Gson;
 import exception.ResponseException;
 import model.AuthData;
 import model.UserData;
@@ -7,6 +8,9 @@ import request.CreateRequest;
 import request.JoinRequest;
 import response.CreateResponse;
 import response.ListResponse;
+import websocket.commands.UserGameCommand;
+
+import static websocket.commands.UserGameCommand.CommandType.*;
 
 public class ServerFacade {
 
@@ -56,9 +60,15 @@ public class ServerFacade {
         http.join(req);
    }
 
-   public void connect() throws ResponseException {
+   public void connect(int gameID) throws ResponseException {
         ws = new WebSocketCommunicator(serverURL, notificationHandler);
+        var message = new UserGameCommand(CONNECT, authToken, gameID);
+        ws.send(new Gson().toJson(message));
    }
 
-
+    public void leave(int gameID) throws ResponseException {
+        var message = new UserGameCommand(LEAVE, authToken, gameID);
+        ws.send(new Gson().toJson(message));
+        ws = null;
+    }
 }

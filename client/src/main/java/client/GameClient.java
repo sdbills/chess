@@ -23,7 +23,7 @@ public class GameClient implements Client {
         this.color = color;
         this.repl = repl;
         this.isPlayer = isPlayer;
-        server.connect();
+        server.connect(gameID);
         System.out.println(printBoard());
     }
 
@@ -58,18 +58,25 @@ public class GameClient implements Client {
     }
 
     private String redraw() {
+        return printBoard();
     }
 
-    private String leave() {
+    private String leave() throws ResponseException {
+        server.leave(gameID);
+        repl.setPost();
+        return "LEFT THE GAME";
     }
 
     private String makeMove(String[] params) {
+        return "MOVED";
     }
 
     private String resign() {
+        return "RESIGNED";
     }
 
     private String highlight(String[] params) {
+        return "HIGHLIGHTED";
     }
 
     public String printBoard() {

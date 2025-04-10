@@ -35,7 +35,11 @@ public class WebSocketCommunicator extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
-    public void send(String message) throws IOException {
-        this.session.getBasicRemote().sendText(message);
+    public void send(String message) throws ResponseException {
+        try {
+            this.session.getBasicRemote().sendText(message);
+        } catch (IOException e) {
+            throw new ResponseException(500, e.getMessage());
+        }
     }
 }
