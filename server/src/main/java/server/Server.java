@@ -14,8 +14,8 @@ import spark.Response;
 import spark.Spark;
 
 public class Server {
-    private static UserService userService;
-    private static GameService gameService;
+    public static UserService userService;
+    public static GameService gameService;
 
     public Server() {
         try {
@@ -59,10 +59,6 @@ public class Server {
     public void clear() throws DataAccessException {
         userService.clear();
         gameService.clear();
-    }
-
-    public static AuthData authenticate(String authToken) throws ResponseException, DataAccessException {
-        return userService.authenticate(authToken);
     }
 
     private Object clearHandler(Request req, Response res) throws DataAccessException {

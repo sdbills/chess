@@ -26,6 +26,15 @@ public class GameService extends Service {
         gameDAO.clear();
     }
 
+    public ChessGame getGame(int gameID) throws DataAccessException {
+        var game = gameDAO.getGame(gameID);
+        if (game != null) {
+            return game.game();
+        } else {
+            throw new DataAccessException("not a valid game");
+        }
+    }
+
     public CreateResponse createGame(CreateRequest req, String authToken) throws DataAccessException, ResponseException {
         authenticate(authToken);
 
