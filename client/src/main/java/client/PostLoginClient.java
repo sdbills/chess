@@ -114,7 +114,11 @@ public class PostLoginClient implements Client{
             }
 
             server.join(new JoinRequest(color, id));
-            repl.setGame(id, color);
+            try {
+                repl.setGame(id, color, true);
+            } catch (ResponseException e) {
+                return "failed to connect to server";
+            }
             return "JOINED AS " + color;
         }
         return "invalid number of parameters, enter 'help' for valid parameters";
@@ -130,7 +134,11 @@ public class PostLoginClient implements Client{
             } catch (IndexOutOfBoundsException e) {
                 return "invalid id parameter, must be number corresponding to games list";
             }
-            repl.setGame(id, ChessGame.TeamColor.WHITE);
+            try {
+                repl.setGame(id, ChessGame.TeamColor.WHITE, false);
+            } catch (ResponseException e) {
+                return "failed to connect to server";
+            }
             return "VIEWING GAME " + id;
         }
         return "invalid number of parameters, enter 'help' for valid parameters";

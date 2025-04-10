@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import client.*;
+import exception.ResponseException;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
@@ -50,8 +51,8 @@ public class Repl implements NotificationHandler {
         currClient = preClient;
     }
 
-    public void setGame(int id, ChessGame.TeamColor color) {
-        new GameClient(server, id, color, this);
+    public void setGame(int id, ChessGame.TeamColor color, boolean isPlayer) throws ResponseException {
+        currClient = new GameClient(server, id, color, this, isPlayer);
     }
 
 
@@ -74,6 +75,7 @@ public class Repl implements NotificationHandler {
             case ERROR -> displayError(((ErrorMessage) message).getMessage());
             case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
         }
+        prompt();
     }
 
     private void displayNotification(String message) {
