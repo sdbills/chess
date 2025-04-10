@@ -2,6 +2,9 @@ package ui;
 
 import chess.ChessGame;
 import client.*;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.util.Scanner;
@@ -66,6 +69,20 @@ public class Repl implements NotificationHandler {
 
     @Override
     public void notify(ServerMessage message) {
-
+        switch (message.getServerMessageType()) {
+            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
+            case ERROR -> displayError(((ErrorMessage) message).getMessage());
+            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
+        }
     }
+
+    private void displayNotification(String message) {
+    }
+
+    private void displayError(String message) {
+    }
+
+    private void loadGame(ChessGame game) {
+    }
+
 }
