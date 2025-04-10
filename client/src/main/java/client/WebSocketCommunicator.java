@@ -2,7 +2,7 @@ package client;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
-import websocket.messages.Notification;
+import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -22,8 +22,8 @@ public class WebSocketCommunicator extends Endpoint {
             this.session = container.connectToServer(this, uri);
 
             this.session.addMessageHandler((MessageHandler.Whole<String>) s -> {
-                Notification notification = new Gson().fromJson(s, Notification.class);
-                notificationHandler.notify(notification);
+                ServerMessage message = new Gson().fromJson(s, ServerMessage.class);
+                notificationHandler.notify(message);
             });
 
         } catch (DeploymentException | URISyntaxException | IOException e) {

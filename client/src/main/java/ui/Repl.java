@@ -2,7 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import client.*;
-import websocket.messages.Notification;
+import websocket.messages.ServerMessage;
 
 import java.util.Scanner;
 
@@ -64,8 +64,8 @@ public class Repl implements NotificationHandler {
         System.out.print(client + ">>>");
     }
 
+    @Override
+    public void notify(ServerMessage message) {
 
-    public void notify(Notification notification) {
-        System.out.println(SET_TEXT_COLOR_RED + notification.getMessage());
     }
 }
