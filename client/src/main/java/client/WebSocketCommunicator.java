@@ -12,7 +12,6 @@ import java.net.URISyntaxException;
 public class WebSocketCommunicator extends Endpoint {
 
     Session session;
-    NotificationHandler notificationHandler;
 
     public WebSocketCommunicator(String serverURL, NotificationHandler notificationHandler) throws ResponseException {
         try {
@@ -22,12 +21,9 @@ public class WebSocketCommunicator extends Endpoint {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
 
-            this.session.addMessageHandler(new MessageHandler.Whole<String>() {
-                @Override
-                public void onMessage(String s) {
-                    Notification notification = new Gson().fromJson(s, Notification.class);
-                    notificationHandler.notify(notification);
-                }
+            this.session.addMessageHandler((MessageHandler.Whole<String>) s -> {
+                Notification notification = new Gson().fromJson(s, Notification.class);
+                notificationHandler.notify(notification);
             });
 
         } catch (DeploymentException | URISyntaxException | IOException e) {
@@ -37,6 +33,9 @@ public class WebSocketCommunicator extends Endpoint {
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
+    }
 
+    public void send(String message) throws IOException {
+        this.session.getBasicRemote().sendText(message);
     }
 }

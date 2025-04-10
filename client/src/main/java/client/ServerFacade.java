@@ -59,4 +59,6 @@ public class ServerFacade {
    public void connect() throws ResponseException {
         ws = new WebSocketCommunicator(serverURL, notificationHandler);
    }
+
+
 }
