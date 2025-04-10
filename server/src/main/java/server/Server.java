@@ -14,16 +14,16 @@ import spark.Response;
 import spark.Spark;
 
 public class Server {
-    private final UserService userService;
-    private final GameService gameService;
+    private static UserService userService;
+    private static GameService gameService;
 
     public Server() {
         try {
             UserDAO userDAO = new SqlUserDAO();
             GameDAO gameDAO = new SqlGameDAO();
             AuthDAO authDAO = new SqlAuthDAO();
-            this.userService = new UserService(userDAO, authDAO);
-            this.gameService = new GameService(gameDAO, authDAO);
+            userService = new UserService(userDAO, authDAO);
+            gameService = new GameService(gameDAO, authDAO);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
@@ -31,6 +31,7 @@ public class Server {
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
+        Spark.webSocket("/ws", WebSocketHandler.class);
 
         Spark.staticFiles.location("web");
 
@@ -58,6 +59,10 @@ public class Server {
     public void clear() throws DataAccessException {
         userService.clear();
         gameService.clear();
+    }
+
+    public static AuthData authenticate(String authToken) throws ResponseException, DataAccessException {
+        return userService.authenticate(authToken);
     }
 
     private Object clearHandler(Request req, Response res) throws DataAccessException {
