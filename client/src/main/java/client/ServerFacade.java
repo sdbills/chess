@@ -14,10 +14,17 @@ public class ServerFacade {
     String authToken;
     HttpCommunicator http;
     WebSocketCommunicator ws;
+    NotificationHandler notificationHandler;
 
     public ServerFacade(String serverURL) {
         this.serverURL = serverURL;
         http = new HttpCommunicator(serverURL);
+    }
+
+    public ServerFacade(String serverURL, NotificationHandler notificationHandler) {
+        this.serverURL = serverURL;
+        http = new HttpCommunicator(serverURL);
+        this.notificationHandler = notificationHandler;
     }
 
    public AuthData register(UserData req) throws ResponseException {
@@ -49,7 +56,7 @@ public class ServerFacade {
         http.join(req);
    }
 
-   public void connect() {
-        ws = new WebSocketCommunicator(serverURL);
+   public void connect() throws ResponseException {
+        ws = new WebSocketCommunicator(serverURL, notificationHandler);
    }
 }
