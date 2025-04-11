@@ -11,6 +11,9 @@ import response.CreateResponse;
 import response.ListResponse;
 import exception.ResponseException;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 
@@ -51,7 +54,7 @@ public class GameService extends Service {
     public ListResponse listGames(String authToken) throws DataAccessException, ResponseException {
         authenticate(authToken);
 
-        var games = new java.util.ArrayList<>(gameDAO.listGames());
+        var games = new ArrayList<>(gameDAO.listGames());
         games.replaceAll(game -> new GameData(game.gameID(),
                 game.whiteUsername(), game.blackUsername(), game.gameName(), null));
         return new ListResponse(games);
@@ -91,8 +94,21 @@ public class GameService extends Service {
 
     public void updateGame(Integer gameID, ChessGame newGame) throws DataAccessException {
         var oldGame = gameDAO.getGame(gameID);
-        gameDAO.updateGame(new GameData(gameID, oldGame.whiteUsername(),
+        gameDAO.updateGame(new GameData(oldGame.gameID(), oldGame.whiteUsername(),
                 oldGame.blackUsername(), oldGame.gameName(), newGame));
+    }
+
+    public void removePlayer(Integer gameID, String username) throws DataAccessException {
+        var oldGame = gameDAO.getGame(gameID);
+        if (Objects.equals(username, oldGame.whiteUsername())) {
+            oldGame = new GameData(oldGame.gameID(), null,
+                    oldGame.blackUsername(), oldGame.gameName(), oldGame.game());
+        }
+        if (Objects.equals(username, oldGame.whiteUsername())) {
+            oldGame = new GameData(oldGame.gameID(), oldGame.whiteUsername(),
+                    null, oldGame.gameName(), oldGame.game());
+        }
+        gameDAO.updateGame(oldGame);
     }
 
     public GameData getGameData(Integer gameID) throws DataAccessException {

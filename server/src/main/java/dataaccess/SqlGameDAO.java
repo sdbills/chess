@@ -90,10 +90,12 @@ public class SqlGameDAO extends SqlDAO implements GameDAO{
     @Override
     public void updateGame(GameData game) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("UPDATE game SET whiteUsername=?, blackUsername=? where gameID=?")) {
+            try (var statement = conn.prepareStatement("UPDATE game SET whiteUsername=?, blackUsername=?, game=? where gameID=?")) {
                 statement.setString(1,game.whiteUsername());
                 statement.setString(2,game.blackUsername());
-                statement.setInt(3,game.gameID());
+                var gameJSON = new Gson().toJson(game.game());
+                statement.setString(3,gameJSON);
+                statement.setInt(4,game.gameID());
                 statement.executeUpdate();
             }
         } catch (SQLException e) {

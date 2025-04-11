@@ -143,9 +143,11 @@ public class WebSocketHandler {
         };
     }
 
-    private void leave(Session session, String user, UserGameCommand command) throws ResponseException {
+    private void leave(Session session, String user, UserGameCommand command) throws ResponseException, DataAccessException {
         var gameID = command.getGameID();
         connections.remove(session);
+        Server.gameService.removePlayer(gameID, user);
+
         String message = user + " has left the game";
         NotificationMessage notification = new NotificationMessage(message);
         try {
@@ -158,7 +160,7 @@ public class WebSocketHandler {
     private void resign(Session session, String user, UserGameCommand command) throws DataAccessException, ResponseException {
         var gameID = command.getGameID();
         var gameData = Server.gameService.getGameData(gameID);
-        if (!Objects.equals(user, gameData.whiteUsername()) || Objects.equals(user, gameData.blackUsername())) {
+        if (!Objects.equals(user, gameData.whiteUsername()) && !Objects.equals(user, gameData.blackUsername())) {
             sendError(session, "you are not a player, can't resign");
             return;
         } else if (gameData.game().isOver()) {
