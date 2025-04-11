@@ -1,13 +1,13 @@
 package client;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import exception.ResponseException;
 import ui.Repl;
 
 import java.util.Arrays;
-
-import static ui.EscapeSequences.*;
 
 public class GameClient implements Client {
     private final ServerFacade server;
@@ -23,8 +23,7 @@ public class GameClient implements Client {
         this.color = color;
         this.repl = repl;
         this.isPlayer = isPlayer;
-        server.connect(gameID);
-//        System.out.println(printBoard());
+        server.connect(gameID, color, isPlayer);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class GameClient implements Client {
         return """
                 redraw - to display the chess board again
                 leave - to leave the game
-                move <start> <end> <promotion?Q|B|N|R> - to move a piece from the start to end positions
+                move <start> <end> <promotion?Q|B|N|R> - to move a piece from the start to end positions (a1 format)
                 resign - to forfeit the game
                 highlight <position> - to highlight the legal moves of a piece
                 help - to get helpful information""";
@@ -72,10 +71,69 @@ public class GameClient implements Client {
     }
 
     private String makeMove(String[] params) {
-        return "MOVED";
+        if (params.length == 2 || params.length == 3) {
+            try {
+                var start = parsePosition(params[0]);
+                var end = parsePosition(params[1]);
+                ChessPiece.PieceType promo = getPromotionPiece(params);
+
+                ChessMove move = new ChessMove(start, end, promo);
+
+                if (game.validMoves(start).contains(move)) {
+                    server.makeMove(gameID, move);
+                    return "moved " + params[0]+params[1];
+                } else {
+                    return "not a valid move, make sure to include promotion if necessary and not otherwise";
+                }
+            } catch (Exception e) {
+                return e.getMessage();
+            }
+        } else {
+            return "invalid number of parameters, enter 'help' for valid parameters";
+        }
+    }
+
+    private ChessPiece.PieceType getPromotionPiece(String[] params) throws Exception {
+        ChessPiece.PieceType promo = null;
+        if (params.length == 3) {
+            switch (params[2]) {
+                case "n" -> promo = ChessPiece.PieceType.KNIGHT;
+                case "q" -> promo = ChessPiece.PieceType.QUEEN;
+                case "b" -> promo = ChessPiece.PieceType.BISHOP;
+                case "r" -> promo = ChessPiece.PieceType.ROOK;
+                default -> throw new Exception("not a valid promotion piece");
+            }
+        }
+        return promo;
+    }
+
+    private ChessPosition parsePosition(String pos) throws Exception {
+        if (pos.length() == 2) {
+            var a = pos.charAt(0);
+            var b = Character.getNumericValue(pos.charAt(1));
+            switch (a) {
+                case 'a' -> a=1;
+                case 'b' -> a=2;
+                case 'c' -> a=3;
+                case 'd' -> a=4;
+                case 'e' -> a=5;
+                case 'f' -> a=6;
+                case 'g' -> a=7;
+                case 'h' -> a=8;
+                default -> throw new Exception("must be in a-h");
+            }
+            if (b < 9 && b > 0) {
+                return new ChessPosition(a, b);
+            } else {
+                throw new Exception("must be in 1-8");
+            }
+        } else {
+            throw new Exception("position must match format 'a1'");
+        }
     }
 
     private String resign() {
+
         return "RESIGNED";
     }
 

@@ -54,12 +54,12 @@ public class WebSocketHandler {
         var color = command.getColor();
 
         String message = user + " has joined the game as";
-        if (color == ChessGame.TeamColor.WHITE) {
+        if (color == null) {
+            message = message + " an observer";
+        }else if (color == ChessGame.TeamColor.WHITE) {
             message = message + " white player";
         } else if (color == ChessGame.TeamColor.BLACK) {
             message = message + " black player";
-        } else {
-            message = message + " an observer";
         }
 
         NotificationMessage notification = new NotificationMessage(message);

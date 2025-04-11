@@ -1,5 +1,7 @@
 package client;
 
+import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.AuthData;
@@ -8,6 +10,8 @@ import request.CreateRequest;
 import request.JoinRequest;
 import response.CreateResponse;
 import response.ListResponse;
+import websocket.commands.ConnectCommand;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 
 import static websocket.commands.UserGameCommand.CommandType.*;
@@ -60,9 +64,14 @@ public class ServerFacade {
         http.join(req);
    }
 
-   public void connect(int gameID) throws ResponseException {
+   public void connect(int gameID, ChessGame.TeamColor color, boolean isPlayer) throws ResponseException {
         ws = new WebSocketCommunicator(serverURL, notificationHandler);
-        var message = new UserGameCommand(CONNECT, authToken, gameID);
+        ConnectCommand message;
+        if (isPlayer) {
+            message = new ConnectCommand(authToken, gameID, color);
+        } else {
+            message = new ConnectCommand(authToken, gameID);
+        }
         ws.send(new Gson().toJson(message));
    }
 
@@ -70,5 +79,10 @@ public class ServerFacade {
         var message = new UserGameCommand(LEAVE, authToken, gameID);
         ws.send(new Gson().toJson(message));
         ws = null;
+    }
+
+    public void makeMove(Integer gameID, ChessMove move) throws ResponseException {
+        var message = new MakeMoveCommand(authToken, gameID, move);
+        ws.send(new Gson().toJson(message));
     }
 }
