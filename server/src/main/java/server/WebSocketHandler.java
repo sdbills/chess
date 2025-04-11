@@ -83,14 +83,17 @@ public class WebSocketHandler {
         }
 
         var turn = gameData.game().getTeamTurn();
-        String userTurn;
+        String turnUser;
+        String otherUser;
         if (turn == ChessGame.TeamColor.WHITE) {
-            userTurn = gameData.whiteUsername();
+            turnUser = gameData.whiteUsername();
+            otherUser = gameData.blackUsername();
         } else {
-            userTurn = gameData.blackUsername();
+            turnUser = gameData.blackUsername();
+            otherUser = gameData.whiteUsername();
         }
 
-        if (user.equals(userTurn)) {
+        if (user.equals(turnUser)) {
             try {
                 gameData.game().makeMove(command.getMove());
                 Server.gameService.updateGame(gameID, gameData.game());
@@ -104,12 +107,12 @@ public class WebSocketHandler {
 
                 var newTurn = gameData.game().getTeamTurn();
                 String message = "";
-                if (gameData.game().isInCheck(newTurn)) {
-                    message = newTurn.toString() + " is in check";
-                } else if (gameData.game().isInCheckmate(newTurn)) {
-                    message = newTurn.toString() + " is in checkmate, game over";
+                if (gameData.game().isInCheckmate(newTurn)) {
+                    message = otherUser + " is in checkmate, game over";
                 } else if (gameData.game().isInStalemate(newTurn)) {
                     message = "it's a stalemate, game over";
+                } else if (gameData.game().isInCheck(newTurn)) {
+                    message = otherUser + " is in check";
                 }
                 if (!message.isEmpty()) {
                     notification = new NotificationMessage(message);
