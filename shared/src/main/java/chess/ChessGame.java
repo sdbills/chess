@@ -18,6 +18,7 @@ public class ChessGame {
     boolean wkCanCastle;
     boolean wqCanCastle;
     ChessPosition enPassantPosition;
+    boolean isOver;
 
     public ChessGame() {
         board = new ChessBoard();
@@ -27,6 +28,7 @@ public class ChessGame {
         bqCanCastle = true;
         wkCanCastle = true;
         wqCanCastle = true;
+        isOver = false;
     }
 
     /**
@@ -41,6 +43,7 @@ public class ChessGame {
         wkCanCastle = game.wkCanCastle;
         wqCanCastle = game.wqCanCastle;
         enPassantPosition = game.enPassantPosition;
+        isOver = game.isOver;
     }
 
     /**
@@ -75,10 +78,9 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (board.isEmptyPosition(startPosition)) {
+        if (board.isEmptyPosition(startPosition) || isOver) {
             return null;
         }
-
 
         var piece = board.getPiece(startPosition);
         var team = piece.getTeamColor();
@@ -235,6 +237,10 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    public void endGame() {
+        isOver = true;
     }
 
 
