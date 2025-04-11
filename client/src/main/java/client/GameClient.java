@@ -132,8 +132,8 @@ public class GameClient implements Client {
         }
     }
 
-    private String resign() {
-
+    private String resign() throws ResponseException {
+        server.resign(gameID);
         return "RESIGNED";
     }
 

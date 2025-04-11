@@ -85,4 +85,9 @@ public class ServerFacade {
         var message = new MakeMoveCommand(authToken, gameID, move);
         ws.send(new Gson().toJson(message));
     }
+
+    public void resign(Integer gameID) throws ResponseException {
+        var message = new UserGameCommand(RESIGN,authToken,gameID);
+        ws.send(new Gson().toJson(message));
+    }
 }
