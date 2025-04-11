@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import client.*;
+import com.google.gson.Gson;
 import exception.ResponseException;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
@@ -17,6 +18,7 @@ public class Repl implements NotificationHandler {
     private final ServerFacade server;
     private PostLoginClient postClient;
     private Client currClient;
+    private GameClient gameClient;
 
 
     public Repl(String serverURL) {
@@ -52,7 +54,8 @@ public class Repl implements NotificationHandler {
     }
 
     public void setGame(int id, ChessGame.TeamColor color, boolean isPlayer) throws ResponseException {
-        currClient = new GameClient(server, id, color, this, isPlayer);
+        gameClient = new GameClient(server, id, color, this, isPlayer);
+        currClient = gameClient;
     }
 
 
@@ -69,22 +72,30 @@ public class Repl implements NotificationHandler {
     }
 
     @Override
-    public void notify(ServerMessage message) {
-        switch (message.getServerMessageType()) {
-            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
-            case ERROR -> displayError(((ErrorMessage) message).getMessage());
-            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
+    public void notify(String message) {
+        ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+        switch (serverMessage.getServerMessageType()) {
+            case NOTIFICATION -> displayNotification(
+                    new Gson().fromJson(message, NotificationMessage.class).getMessage());
+            case ERROR -> displayError((
+                    new Gson().fromJson(message, ErrorMessage.class).getMessage()));
+            case LOAD_GAME -> loadGame(
+                    new Gson().fromJson(message, LoadGameMessage.class).getGame());
         }
         prompt();
     }
 
     private void displayNotification(String message) {
+        System.out.println(SET_TEXT_COLOR_BLUE + message);
     }
 
     private void displayError(String message) {
+        System.out.println(SET_TEXT_COLOR_RED + "Error: " + message);
     }
 
     private void loadGame(ChessGame game) {
+        gameClient.setGame(game);
+        System.out.println(gameClient.redraw());
     }
 
 }

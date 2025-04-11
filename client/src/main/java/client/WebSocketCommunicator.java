@@ -21,9 +21,11 @@ public class WebSocketCommunicator extends Endpoint {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
 
-            this.session.addMessageHandler((MessageHandler.Whole<String>) s -> {
-                ServerMessage message = new Gson().fromJson(s, ServerMessage.class);
-                notificationHandler.notify(message);
+            this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+                @Override
+                public void onMessage(String message) {
+                    notificationHandler.notify(message);
+                }
             });
 
         } catch (DeploymentException | URISyntaxException | IOException e) {
