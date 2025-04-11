@@ -1,12 +1,15 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import exception.ResponseException;
 import org.eclipse.jetty.websocket.api.*;
 import org.eclipse.jetty.websocket.api.annotations.*;
+import websocket.commands.ConnectCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 
 import java.io.IOException;
 
@@ -24,26 +27,49 @@ public class WebSocketHandler {
         connections.add(session, command.getGameID());
 
         switch (command.getCommandType()) {
-            case CONNECT -> connect(session, user, command);
+            case CONNECT -> connect(session, user, new Gson().fromJson(message, ConnectCommand.class));
             case MAKE_MOVE -> makeMove(session, user, command);
             case LEAVE -> leave(session, user, command);
             case RESIGN -> resign(session, user, command);
         }
     }
 
-    private void connect(Session session, String user, UserGameCommand command) throws ResponseException {
+    private void connect(Session session, String user, ConnectCommand command) throws ResponseException {
         var gameID = command.getGameID();
         connections.add(session, gameID);
         sendGame(session, gameID);
-//        Add notification
+        var color = command.getColor();
+
+        String message = user + " has joined the game as";
+        if (color == ChessGame.TeamColor.WHITE) {
+            message = message + " white player";
+        } else if (color == ChessGame.TeamColor.BLACK) {
+            message = message + " black player";
+        } else {
+            message = message + " an observer";
+        }
+
+        NotificationMessage notification = new NotificationMessage(message);
+        try {
+            connections.broadcastOthers(new Gson().toJson(notification), gameID, session);
+        } catch (IOException e) {
+            throw new ResponseException(500, e.getMessage());
+        }
     }
 
     private void makeMove(Session session, String user, UserGameCommand command) {
     }
 
-    private void leave(Session session, String user, UserGameCommand command) {
+    private void leave(Session session, String user, UserGameCommand command) throws ResponseException {
+        var gameID = command.getGameID();
         connections.remove(session);
-//        Add notification
+        String message = user + " has left the game";
+        NotificationMessage notification = new NotificationMessage(message);
+        try {
+            connections.broadcastOthers(new Gson().toJson(notification), gameID, session);
+        } catch (IOException e) {
+            throw new ResponseException(500, e.getMessage());
+        }
     }
 
     private void resign(Session session, String user, UserGameCommand command) {
