@@ -43,8 +43,12 @@ public class WebSocketHandler {
         }
     }
 
-    private void connect(Session session, String user, ConnectCommand command) throws ResponseException {
+    private void connect(Session session, String user, ConnectCommand command) throws ResponseException, DataAccessException {
         var gameID = command.getGameID();
+        if (Server.gameService.getGameData(gameID) == null) {
+            sendError(session, "not a valid gameID");
+            return;
+        }
         connections.add(session, gameID);
         sendGame(session, gameID);
         var color = command.getColor();
@@ -70,7 +74,7 @@ public class WebSocketHandler {
         var gameID = command.getGameID();
         var gameData = Server.gameService.getGameData(gameID);
 
-        if (!Objects.equals(user, gameData.whiteUsername()) || Objects.equals(user, gameData.blackUsername())) {
+        if (!Objects.equals(user, gameData.whiteUsername()) && !Objects.equals(user, gameData.blackUsername())) {
             sendError(session, "you are not a player");
             return;
         } else if (gameData.game().isOver()) {
@@ -139,15 +143,6 @@ public class WebSocketHandler {
         };
     }
 
-    private void sendError(Session session, String message) throws ResponseException {
-        try {
-            var errorMessage = new ErrorMessage(message);
-            session.getRemote().sendString(new Gson().toJson(errorMessage));
-        } catch (IOException e) {
-            throw new ResponseException(500, e.getMessage());
-        }
-    }
-
     private void leave(Session session, String user, UserGameCommand command) throws ResponseException {
         var gameID = command.getGameID();
         connections.remove(session);
@@ -162,9 +157,17 @@ public class WebSocketHandler {
 
     private void resign(Session session, String user, UserGameCommand command) throws DataAccessException, ResponseException {
         var gameID = command.getGameID();
-        var game = Server.gameService.getGame(gameID);
-        game.endGame();
-        Server.gameService.updateGame(gameID, game);
+        var gameData = Server.gameService.getGameData(gameID);
+        if (!Objects.equals(user, gameData.whiteUsername()) || Objects.equals(user, gameData.blackUsername())) {
+            sendError(session, "you are not a player, can't resign");
+            return;
+        } else if (gameData.game().isOver()) {
+            sendError(session, "the game is over already");
+            return;
+        }
+
+        gameData.game().endGame();
+        Server.gameService.updateGame(gameID, gameData.game());
 
         String message = user + " has resigned";
         var notification = new NotificationMessage(message);
@@ -185,4 +188,12 @@ public class WebSocketHandler {
         }
     }
 
+    private void sendError(Session session, String message) throws ResponseException {
+        try {
+            var errorMessage = new ErrorMessage(message);
+            session.getRemote().sendString(new Gson().toJson(errorMessage));
+        } catch (IOException e) {
+            throw new ResponseException(500, e.getMessage());
+        }
+    }
 }

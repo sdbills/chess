@@ -78,7 +78,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (board.isEmptyPosition(startPosition) || isOver) {
+        if (board.isEmptyPosition(startPosition)) {
             return null;
         }
 
