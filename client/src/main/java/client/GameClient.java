@@ -71,6 +71,9 @@ public class GameClient implements Client {
     }
 
     private String makeMove(String[] params) {
+        if (!isPlayer) {
+            return "not a player, can't make a move";
+        }
         if (params.length == 2 || params.length == 3) {
             try {
                 var start = parsePosition(params[0]);
@@ -78,8 +81,8 @@ public class GameClient implements Client {
                 ChessPiece.PieceType promo = getPromotionPiece(params);
 
                 ChessMove move = new ChessMove(start, end, promo);
-
-                if (game.validMoves(start).contains(move)) {
+                var validMoves = game.validMoves(start);
+                if (!validMoves.isEmpty() && validMoves.contains(move)) {
                     server.makeMove(gameID, move);
                     return "moved " + params[0]+params[1];
                 } else {
@@ -123,7 +126,7 @@ public class GameClient implements Client {
                 default -> throw new Exception("must be in a-h");
             }
             if (b < 9 && b > 0) {
-                return new ChessPosition(a, b);
+                return new ChessPosition(b, a);
             } else {
                 throw new Exception("must be in 1-8");
             }
@@ -133,6 +136,9 @@ public class GameClient implements Client {
     }
 
     private String resign() throws ResponseException {
+        if (!isPlayer) {
+            return "not a player, can't make a move";
+        }
         server.resign(gameID);
         return "RESIGNED";
     }

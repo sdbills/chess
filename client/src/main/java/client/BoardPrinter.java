@@ -16,7 +16,6 @@ public class BoardPrinter {
 
     public String printBoard() {
         StringBuilder out = new StringBuilder();
-        out.append("\n");
 
         boolean reverse = color.equals(ChessGame.TeamColor.BLACK);
         out.append(SET_TEXT_BOLD);

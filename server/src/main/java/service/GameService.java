@@ -104,7 +104,7 @@ public class GameService extends Service {
             oldGame = new GameData(oldGame.gameID(), null,
                     oldGame.blackUsername(), oldGame.gameName(), oldGame.game());
         }
-        if (Objects.equals(username, oldGame.whiteUsername())) {
+        if (Objects.equals(username, oldGame.blackUsername())) {
             oldGame = new GameData(oldGame.gameID(), oldGame.whiteUsername(),
                     null, oldGame.gameName(), oldGame.game());
         }

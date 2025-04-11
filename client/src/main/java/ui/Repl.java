@@ -60,13 +60,13 @@ public class Repl implements NotificationHandler {
 
 
     private void prompt() {
-        String client = "";
+        String client = RESET_TEXT_COLOR;
         if (currClient.getClass() == PreLoginClient.class) {
-            client = "[LOGGED OUT]";
+            client += "[LOGGED OUT]";
         } else if (currClient.getClass() == PostLoginClient.class) {
-            client = "[LOGGED IN]";
+            client += "[LOGGED IN]";
         } else if (currClient.getClass() == GameClient.class) {
-            client = "[GAME]";
+            client += "[GAME]";
         }
         System.out.print(client + ">>>");
     }
@@ -95,7 +95,7 @@ public class Repl implements NotificationHandler {
 
     private void loadGame(ChessGame game) {
         gameClient.setGame(game);
-        System.out.println(gameClient.redraw());
+        System.out.println("\n"  + gameClient.redraw());
     }
 
 }
