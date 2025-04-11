@@ -88,4 +88,19 @@ public class GameService extends Service {
         gameDAO.updateGame(new GameData(game.gameID(), whiteUser,
                 blackUser, game.gameName(), game.game()));
     }
+
+    public void updateGame(Integer gameID, ChessGame newGame) throws DataAccessException {
+        var oldGame = gameDAO.getGame(gameID);
+        gameDAO.updateGame(new GameData(gameID, oldGame.whiteUsername(),
+                oldGame.blackUsername(), oldGame.gameName(), newGame));
+    }
+
+    public GameData getGameData(Integer gameID) throws DataAccessException {
+        var game = gameDAO.getGame(gameID);
+        if (game != null) {
+            return game;
+        } else {
+            throw new DataAccessException("not a valid game");
+        }
+    }
 }

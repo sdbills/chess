@@ -176,6 +176,9 @@ public class ChessGame {
         }
         updateCastleFlags();
         teamTurn = otherTeam(teamTurn);
+        if (isInStalemate(teamTurn) || isInCheckmate(teamTurn)) {
+            endGame();
+        }
     }
 
     /**
@@ -241,6 +244,10 @@ public class ChessGame {
 
     public void endGame() {
         isOver = true;
+    }
+
+    public boolean isOver() {
+        return isOver;
     }
 
 
