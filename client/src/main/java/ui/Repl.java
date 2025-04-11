@@ -19,6 +19,7 @@ public class Repl implements NotificationHandler {
     private PostLoginClient postClient;
     private Client currClient;
     private GameClient gameClient;
+    Scanner scanner;
 
 
     public Repl(String serverURL) {
@@ -30,7 +31,7 @@ public class Repl implements NotificationHandler {
     public void run() {
         System.out.println(BLACK_KING + "Welcome to Chess! Enter 'help' for to get started." + BLACK_QUEEN);
 
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
             prompt();
@@ -58,17 +59,15 @@ public class Repl implements NotificationHandler {
         currClient = gameClient;
     }
 
-
-    private void prompt() {
-        String client = RESET_TEXT_COLOR;
-        if (currClient.getClass() == PreLoginClient.class) {
-            client += "[LOGGED OUT]";
-        } else if (currClient.getClass() == PostLoginClient.class) {
-            client += "[LOGGED IN]";
-        } else if (currClient.getClass() == GameClient.class) {
-            client += "[GAME]";
+    public boolean resign() {
+        System.out.println("Are you sure you want to resign? (y/n)");
+        prompt();
+        String input = scanner.nextLine();
+        if (input.equals("yes") || input.equals("y")) {
+            return true;
+        } else {
+            return false;
         }
-        System.out.print(client + ">>>");
     }
 
     @Override
@@ -85,6 +84,18 @@ public class Repl implements NotificationHandler {
         prompt();
     }
 
+    private void prompt() {
+        String client = RESET_TEXT_COLOR;
+        if (currClient.getClass() == PreLoginClient.class) {
+            client += "[LOGGED OUT]";
+        } else if (currClient.getClass() == PostLoginClient.class) {
+            client += "[LOGGED IN]";
+        } else if (currClient.getClass() == GameClient.class) {
+            client += "[GAME]";
+        }
+        System.out.print(client + ">>>");
+    }
+
     private void displayNotification(String message) {
         System.out.println(SET_TEXT_COLOR_BLUE + message);
     }
@@ -97,5 +108,4 @@ public class Repl implements NotificationHandler {
         gameClient.setGame(game);
         System.out.println("\n"  + gameClient.redraw());
     }
-
 }

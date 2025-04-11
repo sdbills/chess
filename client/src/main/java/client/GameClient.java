@@ -139,10 +139,14 @@ public class GameClient implements Client {
 
     private String resign() throws ResponseException {
         if (!isPlayer) {
-            return "not a player, can't make a move";
+            return "not a player, can't make resign";
         }
-        server.resign(gameID);
-        return "RESIGNED";
+        if (repl.resign()) {
+            server.resign(gameID);
+            return "RESIGNED";
+        } else {
+            return "NOT RESIGNED";
+        }
     }
 
     private String highlight(String[] params) {
