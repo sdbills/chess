@@ -25,9 +25,11 @@ public class BoardPrinter {
         this.game = game;
         this.start = start;
         Collection<ChessMove> moves = game.validMoves(start);
-        this.end = new ArrayList<>();
-        for (ChessMove m : moves) {
-            end.add(m.getEndPosition());
+        if (moves != null) {
+            this.end = new ArrayList<>();
+            for (ChessMove m : moves) {
+                end.add(m.getEndPosition());
+            }
         }
     }
 
@@ -113,7 +115,7 @@ public class BoardPrinter {
             var pos = new ChessPosition(row, col);
             if (pos.equals(start)) {
                 return SET_BG_COLOR_YELLOW;
-            } else if (end.contains(pos)) {
+            } else if (end != null && !end.isEmpty() && end.contains(pos)) {
                 if (Math.ceilMod(tot,2) == 0) {
                     return SET_BG_COLOR_DARK_GREEN;
                 } else {

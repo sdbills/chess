@@ -84,7 +84,7 @@ public class GameClient implements Client {
 
                 ChessMove move = new ChessMove(start, end, promo);
                 var validMoves = game.validMoves(start);
-                if (!validMoves.isEmpty() && validMoves.contains(move)) {
+                if (validMoves != null && validMoves.contains(move)) {
                     server.makeMove(gameID, move);
                     return "moved " + params[0]+params[1];
                 } else {
