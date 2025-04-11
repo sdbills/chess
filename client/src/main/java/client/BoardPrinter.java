@@ -1,17 +1,34 @@
 package client;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPosition;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static ui.EscapeSequences.*;
 
 public class BoardPrinter {
     ChessGame.TeamColor color;
     ChessGame game;
+    ChessPosition start;
+    ArrayList<ChessPosition> end;
 
     public BoardPrinter (ChessGame game, ChessGame.TeamColor color) {
         this.color = color;
         this.game = game;
+    }
+
+    public BoardPrinter (ChessGame game, ChessGame.TeamColor color, ChessPosition start) {
+        this.color = color;
+        this.game = game;
+        this.start = start;
+        Collection<ChessMove> moves = game.validMoves(start);
+        this.end = new ArrayList<>();
+        for (ChessMove m : moves) {
+            end.add(m.getEndPosition());
+        }
     }
 
     public String printBoard() {
@@ -92,6 +109,19 @@ public class BoardPrinter {
 
     private String tileColor(int row, int col) {
         int tot = row+col;
+        if (start != null) {
+            var pos = new ChessPosition(row, col);
+            if (pos.equals(start)) {
+                return SET_BG_COLOR_YELLOW;
+            } else if (end.contains(pos)) {
+                if (Math.ceilMod(tot,2) == 0) {
+                    return SET_BG_COLOR_DARK_GREEN;
+                } else {
+                    return SET_BG_COLOR_GREEN;
+                }
+            }
+        }
+
         if (Math.ceilMod(tot,2) == 0) {
             return SET_BG_COLOR_RED;
         } else {

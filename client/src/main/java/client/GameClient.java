@@ -73,6 +73,8 @@ public class GameClient implements Client {
     private String makeMove(String[] params) {
         if (!isPlayer) {
             return "not a player, can't make a move";
+        } else if (game.isOver()) {
+            return "the game is already over";
         }
         if (params.length == 2 || params.length == 3) {
             try {
@@ -144,6 +146,15 @@ public class GameClient implements Client {
     }
 
     private String highlight(String[] params) {
-        return "HIGHLIGHTED";
+        if (params.length == 1) {
+            try {
+                var position = parsePosition(params[0]);
+                return new BoardPrinter(game, color, position).printBoard();
+            } catch (Exception e) {
+                return e.getMessage();
+            }
+        } else {
+            return "invalid number of parameters, enter 'help' for valid parameters";
+        }
     }
 }
